@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirai Labs — Enterprise AI Partner</title>
+  <meta name="description" content="Mirai Labs partners with enterprise leaders to design, build, and deploy production-grade AI systems. Explore AI use cases across healthcare, audit, sales, finance, and talent acquisition.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B1929'/><text x='50' y='68' font-size='60' font-weight='900' text-anchor='middle' fill='white' font-family='sans-serif'>m</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script type="text/babel">
+import { useState, useEffect, useRef } from "react";
+
+const PAGES = { HOME: "home", USE_CASES: "use_cases", DETAIL: "detail" };
+const INDUSTRIES = [
+  { id: "healthcare", name: "Healthcare", icon: "🏥", color: "#0D9488", gradient: "linear-gradient(135deg, #065A60 0%, #0D9488 50%, #14B8A6 100%)", tagline: "Clinical operations, revenue cycle, patient engagement", count: 6, ready: true },
+  { id: "audit", name: "Audit & CPA Firms", icon: "📊", color: "#4F46E5", gradient: "linear-gradient(135deg, #312E81 0%, #4F46E5 50%, #818CF8 100%)", tagline: "Tax processing, audit workflows, advisory automation", count: 6, ready: true },
+  { id: "talent", name: "Talent Acquisition", icon: "🎯", color: "#E11D48", gradient: "linear-gradient(135deg, #881337 0%, #E11D48 50%, #FB7185 100%)", tagline: "Sourcing, screening, outreach, scheduling", count: 5, ready: true },
+  { id: "gtm", name: "Go-to-Market / Sales", icon: "📈", color: "#F59E0B", gradient: "linear-gradient(135deg, #92400E 0%, #F59E0B 50%, #FCD34D 100%)", tagline: "Pipeline generation, deal intelligence, revenue ops", count: 5, ready: true },
+  { id: "cfo", name: "CFO Office / Finance", icon: "💼", color: "#059669", gradient: "linear-gradient(135deg, #064E3B 0%, #059669 50%, #34D399 100%)", tagline: "Close automation, AP/AR, cash flow, compliance", count: 6, ready: true },
+];
+
+const HEALTHCARE_CASES = [
+  {
+    id: 1, num: "01", title: "Ambient Clinical Documentation",
+    subtitle: "AI Scribe",
+    icon: null,
+    problem: "Physicians spend up to 70% of their time on administrative documentation rather than patient care. Manual note-taking leads to clinician burnout, incomplete records, and reduced face-to-face time. Over 60% of physicians report EHR-related stress as a top contributor to career dissatisfaction.",
+    solution: "Deploy an AI-powered ambient listening system that captures physician-patient conversations in real time. The AI generates structured, specialty-specific clinical notes directly into the EHR — eliminating manual documentation. NLP ensures medical accuracy while clinicians review and approve notes in seconds.",
+    impacts: [
+      { value: "2–3 hrs/day", label: "Documentation time saved per clinician", icon: "—" },
+      { value: "Up to 90%", label: "Reduction in physician burnout scores", icon: null },
+      { value: "5:1 ROI", label: "Average return on investment reported", icon: "—" },
+      { value: "100%", label: "KLAS high-satisfaction scores", icon: null },
+    ],
+  },
+  {
+    id: 2, num: "02", title: "Autonomous Medical Coding & Billing",
+    subtitle: "Revenue Cycle AI",
+    icon: null,
+    problem: "Manual medical coding is slow, error-prone, and expensive. Coding backlogs delay revenue collection, while inaccurate codes lead to claim denials costing hospitals ~$25 per reworked claim. With 1,000+ new ICD codes added annually, keeping coders current is unsustainable.",
+    solution: "Implement an AI platform that reads clinical documentation and autonomously assigns accurate ICD, CPT, and HCPCS codes across specialties. The system integrates with existing EHRs (Epic, Cerner), flags edge cases for human review, and continuously learns from coder feedback.",
+    impacts: [
+      { value: "95%+", label: "Coding accuracy across specialties", icon: null },
+      { value: "40–60%", label: "Reduction in coding costs", icon: "—" },
+      { value: "85% fewer", label: "Claim denials from coding errors", icon: null },
+      { value: "Days → Hours", label: "Revenue cycle turnaround", icon: "—" },
+    ],
+  },
+  {
+    id: 3, num: "03", title: "Prior Authorization Automation",
+    subtitle: "Approval Workflow AI",
+    icon: null,
+    problem: "Prior authorization is healthcare's biggest bottleneck — each request takes 15–45 minutes of staff time. 94% of prior auth causes care delays, and the average practice handles 45+ requests per physician per week, consuming full-time staff resources.",
+    solution: "Deploy AI agents that automatically extract clinical data from the EHR, match against payer-specific requirements, populate authorization forms, and submit — without manual intervention. The system tracks approvals in real time and auto-generates appeals with clinical evidence when denied.",
+    impacts: [
+      { value: "75–80%", label: "Reduction in staff time per auth", icon: "—" },
+      { value: "3x faster", label: "Average approval turnaround", icon: null },
+      { value: "50%+ fewer", label: "Denials via proactive documentation", icon: null },
+      { value: "$4–8 saved", label: "Per authorization in admin costs", icon: "—" },
+    ],
+  },
+  {
+    id: 4, num: "04", title: "AI-Powered Patient Scheduling & Triage",
+    subtitle: "Smart Access",
+    icon: null,
+    problem: "Front desks are overwhelmed — phone wait times average 8+ minutes, 30% of calls go unanswered, and no-show rates hover at 18–25%. Manual scheduling fails to match patient acuity with providers, leading to misallocation of clinical capacity.",
+    solution: "Implement an AI voice and text agent that handles inbound requests 24/7. The system performs intelligent triage — analyzing symptoms, urgency, and history to route to the right care level. It auto-schedules, sends smart reminders, and fills cancellation gaps in real time.",
+    impacts: [
+      { value: "40–50%", label: "Reduction in no-show rates", icon: null },
+      { value: "90%+", label: "Calls answered without staff", icon: null },
+      { value: "24/7", label: "Patient access, no added headcount", icon: "—" },
+      { value: "15–20%", label: "Increase in schedule utilization", icon: "—" },
+    ],
+  },
+  {
+    id: 5, num: "05", title: "AI Chatbots for Patient Support",
+    subtitle: "24/7 Engagement",
+    icon: null,
+    problem: "Patients struggle to get timely answers outside business hours. Call centers are expensive with 12+ minute hold times. Lack of multilingual support excludes non-English-speaking populations, widening the health equity gap.",
+    solution: "Deploy a HIPAA-compliant AI chatbot across web, mobile, and patient portal channels. It handles post-treatment guidance, symptom checking, medication reminders, and billing FAQs — in 20+ languages. Complex queries escalate to live nurses with full context.",
+    impacts: [
+      { value: "70%+", label: "Queries resolved without staff", icon: null },
+      { value: "38%", label: "Patient satisfaction improvement", icon: null },
+      { value: "20+ languages", label: "Multilingual support included", icon: "—" },
+      { value: "60% lower", label: "Cost per interaction vs call center", icon: "—" },
+    ],
+  },
+  {
+    id: 6, num: "06", title: "Insurance Claims Processing",
+    subtitle: "Claims Automation",
+    icon: null,
+    problem: "Claims processing involves manual reviews and missing documentation. Average claims take 30–90 days to settle with 20% requiring rework. Fraudulent claims cost $68B+ annually while legitimate claims face unnecessary delays.",
+    solution: "Build an end-to-end AI claims pipeline: OCR + NLP auto-reads and validates claim forms, clinical records, and documents. ML models assess validity, flag anomalies and fraud patterns, and auto-adjudicate clean claims for instant payment. Edge cases route to reviewers with AI summaries.",
+    impacts: [
+      { value: "50–70%", label: "Claims auto-adjudicated", icon: null },
+      { value: "60% faster", label: "End-to-end settlement time", icon: "—" },
+      { value: "30–40%", label: "Reduction in fraud payouts", icon: null },
+      { value: "$12–18", label: "Saved per claim in processing", icon: "—" },
+    ],
+  },
+];
+
+const AUDIT_CASES = [
+  {
+    id: 1, num: "01", title: "Automated Tax Document Processing",
+    subtitle: "K-1s, 1099s, W-2s & More",
+    icon: null,
+    problem: "Every tax season, firms manually key data from thousands of K-1s, 1099s, W-2s, and partnership compliance packages. It's the single biggest peak-season bottleneck — driving overtime, spiking error rates, and burning out staff. A mid-size firm may process 5,000+ source documents per season, with each requiring 15–30 minutes of manual entry.",
+    solution: "Deploy AI-powered document extraction that reads, classifies, and extracts structured data from any tax document format — scanned PDFs, digital filings, or images. The system auto-maps extracted fields into tax preparation software, flags mismatches or missing data for human review, and learns from corrections to improve accuracy over time.",
+    impacts: [
+      { value: "85–90%", label: "Reduction in manual data entry time", icon: "—" },
+      { value: "95%+", label: "Extraction accuracy across document types", icon: null },
+      { value: "3x more", label: "Returns processed per staff member", icon: null },
+      { value: "60% less", label: "Overtime during peak tax season", icon: "—" },
+    ],
+  },
+  {
+    id: 2, num: "02", title: "Intelligent GL Reconciliation",
+    subtitle: "Real-Time Matching & Exception Handling",
+    icon: null,
+    problem: "Reconciliation is the single most repetitive, high-volume task in audit and accounting. Staff manually trace every mismatch between the general ledger, subledgers, bank feeds, and third-party statements — spending 4–8 hours per client, every month. Errors compound silently, and late detection means costly adjustments.",
+    solution: "Implement AI agents that access the GL, subledgers, and bank feeds simultaneously. The system performs real-time three-way matching, flags mismatches with root-cause explanations, auto-generates draft adjustment entries, and produces reconciliation reports — all without manual intervention. Exception items are prioritized by materiality.",
+    impacts: [
+      { value: "75–85%", label: "Reduction in reconciliation time", icon: "—" },
+      { value: "Real-time", label: "Continuous matching vs monthly batch", icon: null },
+      { value: "90% fewer", label: "Undetected reconciliation errors", icon: null },
+      { value: "$50K+", label: "Annual savings per mid-size firm", icon: "—" },
+    ],
+  },
+  {
+    id: 3, num: "03", title: "AI-Powered Audit Evidence Collection",
+    subtitle: "Smart Document Search & Extraction",
+    icon: null,
+    problem: "Staff auditors spend 60%+ of engagement time hunting through bulk PDFs, contracts, board minutes, and lease agreements for evidence. Scouring an 80-page document for a single data point is tedious and error-prone. This directly drives budget overruns, missed deadlines, and staff frustration on every engagement.",
+    solution: "Deploy AI that ingests all client-provided documentation, indexes content semantically, and responds to natural-language queries — e.g., 'Find all lease modification clauses signed after Jan 2024.' The system extracts relevant passages, summarizes key terms, flags missing evidence gaps, and auto-populates audit workpapers with citations.",
+    impacts: [
+      { value: "60–70%", label: "Faster evidence gathering per engagement", icon: "—" },
+      { value: "3x more", label: "Audit samples reviewed per staff hour", icon: null },
+      { value: "40% fewer", label: "Budget overruns on audit engagements", icon: null },
+      { value: "Near-zero", label: "Missed evidence gaps at review stage", icon: "—" },
+    ],
+  },
+  {
+    id: 4, num: "04", title: "AI-Powered Bookkeeping & Categorization",
+    subtitle: "End-to-End CAS Automation",
+    icon: null,
+    problem: "Client Advisory Services (CAS) is the fastest-growing practice area, but margins are thin because bookkeeping is labor-intensive. Manual transaction categorization doesn't scale — firms are turning away clients because they can't staff the work. Each bookkeeper handles only 15–20 clients before quality degrades.",
+    solution: "Deploy agentic AI that categorizes transactions automatically using client-specific rules and historical patterns. The system flags anomalies, generates monthly financial reports, reconciles accounts, and drafts client update messages. It handles the full bookkeeping cycle with human-in-the-loop review only for exceptions.",
+    impacts: [
+      { value: "2–3x", label: "More clients per bookkeeper", icon: null },
+      { value: "90%+", label: "Auto-categorization accuracy", icon: null },
+      { value: "70% less", label: "Time on monthly close per client", icon: "—" },
+      { value: "35% higher", label: "CAS practice profit margins", icon: "—" },
+    ],
+  },
+  {
+    id: 5, num: "05", title: "Automated Financial Statement Preparation",
+    subtitle: "Footing, Tie-Out & Disclosure Checks",
+    icon: null,
+    problem: "Production teams spend days manually footing financial statements, tying disclosures back to balances, and cross-checking consistency across notes. A single missed tie-out can trigger restatements. With staffing shortages, this bottleneck delays every engagement and creates quality risk at the worst possible time.",
+    solution: "AI automatically foots all financial statement line items, cross-references every disclosure to underlying trial balance figures, checks mathematical consistency, and validates formatting against firm templates. It generates an exception report highlighting any mismatches, untied figures, or missing disclosures for human review.",
+    impacts: [
+      { value: "80% faster", label: "Financial statement preparation time", icon: "—" },
+      { value: "99%+", label: "Accuracy in footing and tie-out", icon: null },
+      { value: "Zero", label: "Missed disclosure tie-outs at review", icon: null },
+      { value: "2–3 days", label: "Saved per engagement on production", icon: "—" },
+    ],
+  },
+  {
+    id: 6, num: "06", title: "AI Tax Research & Compliance",
+    subtitle: "Context-Aware Research Engine",
+    icon: null,
+    problem: "Tax code complexity is exploding — federal, state, and local regulations change constantly. Research that once took 30 minutes now takes hours across multiple databases. Getting it wrong means penalties for clients, malpractice risk for the firm, and missed tax-saving opportunities that erode client trust.",
+    solution: "Implement an AI research engine trained on tax codes, IRS rulings, court decisions, and firm-specific knowledge bases. Staff ask natural-language questions — e.g., 'Can my S-corp client deduct home office expenses in California?' — and receive context-aware answers with citations, confidence scores, and links to primary sources.",
+    impacts: [
+      { value: "70–80%", label: "Reduction in tax research time", icon: "—" },
+      { value: "Instant", label: "Multi-jurisdiction answers with citations", icon: null },
+      { value: "40% more", label: "Tax-saving opportunities identified", icon: null },
+      { value: "Near-zero", label: "Research errors with source verification", icon: "—" },
+    ],
+  },
+];
+
+const TALENT_CASES = [
+  {
+    id: 1, num: "01", title: "AI Resume Parsing & Candidate Screening",
+    subtitle: "Instant Shortlisting at Scale",
+    icon: null,
+    problem: "For every open role, 250+ applications pour in — and 75% are unqualified. Recruiters spend up to 30 hours per week manually reviewing resumes, scanning for keywords, and sorting candidates. Top talent slips away while agencies are still processing the first batch. Speed-to-submit is the #1 competitive differentiator, and manual screening kills it.",
+    solution: "Deploy AI that instantly parses resumes across any format (PDF, Word, LinkedIn profiles), extracts structured data — skills, experience, certifications, career trajectory — and scores candidates against role requirements. The system auto-ranks applicants, flags top matches, and pushes shortlists to recruiters within minutes of application, not days.",
+    impacts: [
+      { value: "85–90%", label: "Reduction in resume screening time", icon: "—" },
+      { value: "3x faster", label: "Speed-to-submit to clients", icon: null },
+      { value: "95%+", label: "Parsing accuracy across document formats", icon: null },
+      { value: "40% fewer", label: "Unqualified candidates reaching interviews", icon: "—" },
+    ],
+  },
+  {
+    id: 2, num: "02", title: "AI-Powered Candidate Sourcing & Matching",
+    subtitle: "Proactive Talent Discovery",
+    icon: null,
+    problem: "Recruiters search the same talent pools competitors do — LinkedIn, a few job boards, and their own stale database. Passive candidates (70% of the workforce) are invisible to traditional sourcing. Manual Boolean searches miss non-obvious skill matches and career changers. Agencies that source faster and wider win the placement.",
+    solution: "Implement AI that continuously scans millions of profiles across job boards, social platforms, GitHub, portfolios, and internal ATS databases. The system matches candidates to open roles using skills-based intelligence — not just keyword matching — surfacing hidden talent including career changers, bootcamp grads, and passive candidates who haven't applied.",
+    impacts: [
+      { value: "5x larger", label: "Talent pool surfaced per role", icon: null },
+      { value: "40%", label: "Reduction in time-to-fill", icon: "—" },
+      { value: "60% more", label: "Passive candidates engaged", icon: null },
+      { value: "2x higher", label: "Placement success rate from AI matches", icon: "—" },
+    ],
+  },
+  {
+    id: 3, num: "03", title: "AI Voice Screening & Pre-Qualification",
+    subtitle: "24/7 Automated Phone Screens",
+    icon: null,
+    problem: "Phone screens are the biggest time sink in agency recruiting — each call takes 15–30 minutes, and 60% of candidates don't pass basic qualification. Recruiters make 50+ calls daily, most going to voicemail. Candidates in different time zones wait days for a callback. By then, they've accepted another offer.",
+    solution: "Deploy AI voice agents that conduct pre-qualification calls 24/7 — immediately after a candidate applies. The agent asks about availability, salary expectations, location, visa status, and role-specific qualifications. It assesses responses in real time, scores candidates, and delivers interview-ready shortlists to recruiters each morning.",
+    impacts: [
+      { value: "80%", label: "Reduction in recruiter phone screen time", icon: "—" },
+      { value: "24/7", label: "Candidate engagement, zero wait time", icon: null },
+      { value: "3x more", label: "Candidates screened per recruiter per day", icon: null },
+      { value: "50% fewer", label: "Candidate drop-offs from slow response", icon: "—" },
+    ],
+  },
+  {
+    id: 4, num: "04", title: "Automated Candidate Outreach & Nurturing",
+    subtitle: "Hyper-Personalized at Scale",
+    icon: null,
+    problem: "Recruiters send hundreds of cold outreach messages weekly with less than 15% response rate. Generic templates feel impersonal and get ignored. Personalizing each message is impossible at volume. Meanwhile, dormant candidates in the ATS — previously engaged talent who weren't placed — sit untouched because there's no time to re-engage them.",
+    solution: "AI generates hyper-personalized outreach messages based on each candidate's profile, recent activity, career interests, and the specific role. It sequences multi-channel follow-ups (email, SMS, LinkedIn) with optimal send times. The system also re-engages dormant talent pools automatically — surfacing warm leads from past interactions when new matching roles open.",
+    impacts: [
+      { value: "2–3x higher", label: "Response rates vs generic outreach", icon: null },
+      { value: "70% less", label: "Time spent crafting outreach messages", icon: "—" },
+      { value: "35%", label: "Placements from re-engaged dormant talent", icon: null },
+      { value: "Fully automated", label: "Multi-channel follow-up sequences", icon: "—" },
+    ],
+  },
+  {
+    id: 5, num: "05", title: "Intelligent Interview Scheduling",
+    subtitle: "Zero Back-and-Forth Coordination",
+    icon: null,
+    problem: "Scheduling coordination burns 4–8 hours per week per recruiter. Back-and-forth emails across time zones, cancellations, panel availability conflicts, and last-minute rescheduling create friction that slows every placement. Candidates drop out when scheduling takes too long, and recruiters waste hours on logistics instead of relationship building.",
+    solution: "Deploy AI scheduling agents that integrate with recruiter, candidate, and hiring manager calendars. The system proposes optimal time slots across time zones, handles multi-panel coordination, auto-sends confirmations and reminders, manages rescheduling autonomously, and backfills cancelled slots — all without a single email from the recruiter.",
+    impacts: [
+      { value: "90%", label: "Reduction in scheduling coordination time", icon: "—" },
+      { value: "< 8 minutes", label: "Average time from request to confirmed interview", icon: null },
+      { value: "45% fewer", label: "No-shows with smart reminders", icon: null },
+      { value: "6+ hrs/week", label: "Saved per recruiter for relationship building", icon: "—" },
+    ],
+  },
+];
+
+const GTM_CASES = [
+  {
+    id: 1, num: "01", title: "AI SDR / Autonomous Outbound Prospecting",
+    subtitle: "Your 24/7 Pipeline Engine",
+    icon: null,
+    problem: "SDR teams spend 70% of their time on manual prospecting — building account lists, researching contacts, writing emails, and following up. Most outbound sequences get <2% reply rates. Hiring SDRs is expensive ($75K+ fully loaded), ramp takes 3–6 months, and turnover averages 35% annually. Meanwhile, competitors running AI outbound are booking meetings while your team is still building lists.",
+    solution: "Deploy AI agents that run the entire outbound workflow autonomously: identify ICP-fit accounts from intent and firmographic data, find the right contacts, research each prospect, generate hyper-personalized multi-channel sequences (email, LinkedIn, phone), manage follow-up cadences, and alert human reps only when a prospect engages. Operates 24/7 at a fraction of SDR team cost.",
+    impacts: [
+      { value: "90%", label: "Of SDR workflow automated end-to-end", icon: "—" },
+      { value: "3–5x", label: "More meetings booked per month", icon: null },
+      { value: "70% lower", label: "Cost per qualified meeting vs human SDRs", icon: "—" },
+      { value: "24/7", label: "Outbound running across time zones", icon: null },
+    ],
+  },
+  {
+    id: 2, num: "02", title: "AI Lead Scoring & Prioritization",
+    subtitle: "Focus Reps on Deals That Close",
+    icon: null,
+    problem: "Sales reps waste 50%+ of their time on leads that never convert. MQLs from marketing are often unqualified, and without real-time buying signals, teams treat all leads equally. CRM lead scores are static and based on incomplete data. The result: bloated pipelines, inaccurate forecasts, and reps burning hours on accounts that were never going to buy.",
+    solution: "Implement AI that continuously scores every lead and account by analyzing behavioral signals (website visits, content downloads, email engagement), firmographic fit, technographic data, and third-party intent signals. Scores update in real time as buyer behavior changes. Reps get a dynamically ranked priority list each morning — and alerts when high-intent accounts surge.",
+    impacts: [
+      { value: "30%", label: "Improvement in lead-to-opportunity conversion", icon: null },
+      { value: "50% less", label: "Time wasted on unqualified leads", icon: "—" },
+      { value: "20% larger", label: "Average deal size from better targeting", icon: "—" },
+      { value: "Real-time", label: "Score updates vs static weekly batches", icon: null },
+    ],
+  },
+  {
+    id: 3, num: "03", title: "Conversational AI for Inbound Lead Capture",
+    subtitle: "Engage, Qualify & Book — Instantly",
+    icon: null,
+    problem: "50%+ of website visitors leave without converting. Contact forms feel like a dead end — the average response time to a web lead is 42 hours, by which point 78% of buyers have moved on. Buyers expect instant, relevant answers — not a 'someone will get back to you' email. Every hour of delay cuts qualification rates by 10x.",
+    solution: "Deploy an AI chatbot that engages website visitors in real time with contextual, intelligent conversations — not scripted FAQ flows. The bot qualifies visitors by asking smart questions (company size, use case, timeline, budget), answers product questions using your knowledge base, recommends relevant content, and books meetings directly on rep calendars. Qualified leads are routed instantly with full conversation context.",
+    impacts: [
+      { value: "30%+", label: "More leads captured vs static forms", icon: null },
+      { value: "< 10 seconds", label: "Average response time to any visitor", icon: "—" },
+      { value: "2x higher", label: "Visitor-to-meeting conversion rate", icon: null },
+      { value: "24/7", label: "Lead capture including nights and weekends", icon: "—" },
+    ],
+  },
+  {
+    id: 4, num: "04", title: "Conversation Intelligence & Deal Coaching",
+    subtitle: "Turn Every Call Into a Coaching Moment",
+    icon: null,
+    problem: "Sales managers can only listen to 1–2% of rep calls, so coaching is inconsistent and reactive — based on gut feel, not data. Reps repeat the same mistakes across deals. Winning talk tracks, objection-handling techniques, and competitor intel live in the heads of top performers and never get transferred to the rest of the team. Deals go dark and nobody knows why until it's too late.",
+    solution: "AI records, transcribes, and analyzes every sales conversation — calls, demos, and meetings. It surfaces patterns across your pipeline: which talk tracks correlate with closed-won deals, where reps lose momentum, what objections kill deals, and when competitors are mentioned. Managers get automated coaching alerts and deal risk flags. Reps get real-time suggestions and post-call scorecards.",
+    impacts: [
+      { value: "25–35%", label: "Improvement in rep win rates after coaching", icon: null },
+      { value: "100%", label: "Of calls analyzed vs 1–2% manually", icon: null },
+      { value: "40% faster", label: "New rep ramp time with AI-guided onboarding", icon: "—" },
+      { value: "Early warning", label: "Deal risk alerts before pipeline reviews", icon: "—" },
+    ],
+  },
+  {
+    id: 5, num: "05", title: "AI Revenue Intelligence & Adaptive Playbooks",
+    subtitle: "Learn What Wins — Then Scale It",
+    icon: null,
+    problem: "Most sales teams don't know why they win or lose deals — win/loss reviews happen quarterly (if at all), rely on anecdotal rep feedback, and insights never make it into the playbook. Static sales playbooks sit in a PDF nobody reads. Best practices stay locked in top performers' heads while 80% of the team underperforms. When market conditions shift, playbooks become obsolete overnight.",
+    solution: "AI continuously mines every closed deal — CRM data, call recordings, email threads, proposal history, competitor mentions, pricing objections, and deal timelines — to identify statistically significant win/loss patterns. It then auto-generates and updates dynamic sales playbooks: recommended talk tracks per persona, objection-handling scripts by competitor, content to share at each stage, and pricing guidance. Reps get contextual, in-workflow recommendations — not static documents.",
+    impacts: [
+      { value: "20–30%", label: "Increase in overall team win rates", icon: null },
+      { value: "Continuous", label: "Playbook updates vs annual manual refresh", icon: null },
+      { value: "50% faster", label: "New hire ramp to first closed deal", icon: "—" },
+      { value: "Data-backed", label: "Every recommendation tied to deal outcomes", icon: "—" },
+    ],
+  },
+];
+
+const CFO_CASES = [
+  {
+    id: 1, num: "01", title: "AI-Powered Month-End Close Automation",
+    subtitle: "From 10 Days to 2–3 Days",
+    icon: null,
+    problem: "The monthly close is a fire drill every single month — reconciliations, journal entries, accruals, intercompany eliminations, flux analysis — all done manually across spreadsheets. It takes 5–10 business days at most companies. Finance teams are so consumed by closing the books that they have zero time left for analysis, forecasting, or strategic partnership with the business.",
+    solution: "Deploy AI that automates the close workflow end-to-end: auto-reconciles accounts, generates recurring journal entries, calculates accruals based on historical patterns, flags exceptions for review, and produces close status dashboards in real time. The system learns your close process, identifies bottlenecks, and continuously compresses timelines with each cycle.",
+    impacts: [
+      { value: "50–70%", label: "Reduction in close cycle time", icon: "—" },
+      { value: "90%+", label: "Auto-reconciliation rate for standard accounts", icon: null },
+      { value: "3–5 days", label: "Freed up for analysis and business partnering", icon: null },
+      { value: "Near-zero", label: "Manual journal entry errors", icon: "—" },
+    ],
+  },
+  {
+    id: 2, num: "02", title: "Accounts Payable Automation",
+    subtitle: "Invoice-to-Pay Without the Manual Grind",
+    icon: null,
+    problem: "AP teams process thousands of invoices monthly — manually keying data, matching invoices to POs and receipts, routing approvals, and scheduling payments. Error rates hit 3–5%, duplicate payments leak cash, and late payments damage supplier relationships and miss early-pay discounts. It's the #1 most-adopted AI use case in finance for a reason — the pain is universal.",
+    solution: "Implement AI-powered invoice processing that auto-captures data via OCR/NLP from any format (PDF, email, scan), performs intelligent 3-way matching against POs and goods receipts, routes approvals based on business rules, flags duplicates and anomalies, and schedules payments to optimize cash flow and capture early-pay discounts.",
+    impacts: [
+      { value: "80–90%", label: "Invoices processed touchless (straight-through)", icon: null },
+      { value: "75% faster", label: "Invoice-to-payment cycle time", icon: "—" },
+      { value: "95% fewer", label: "Duplicate payments and AP errors", icon: null },
+      { value: "2–3%", label: "Cash savings from early-pay discount capture", icon: "—" },
+    ],
+  },
+  {
+    id: 3, num: "03", title: "Accounts Receivable & Collections Intelligence",
+    subtitle: "Get Paid Faster, Chase Smarter",
+    icon: null,
+    problem: "AR teams chase every customer equally instead of prioritizing by likelihood to pay. DSO (Days Sales Outstanding) directly impacts cash flow and working capital, yet collection strategies are one-size-fits-all. 82% of companies using AI in AR report productivity gains — the rest are leaving cash on the table. Manual dunning processes miss optimal timing and tone.",
+    solution: "AI predicts payment behavior for every customer using historical patterns, invoice characteristics, and external credit signals. It auto-prioritizes collection efforts, generates personalized dunning messages timed for maximum response, flags at-risk accounts early, and auto-applies cash receipts. The CFO gets a real-time DSO dashboard with forward-looking projections.",
+    impacts: [
+      { value: "20–30%", label: "Reduction in Days Sales Outstanding", icon: "—" },
+      { value: "82%", label: "Of AI AR users report productivity gains", icon: null },
+      { value: "40% fewer", label: "Past-due invoices through predictive dunning", icon: null },
+      { value: "Millions", label: "In freed working capital annually", icon: "—" },
+    ],
+  },
+  {
+    id: 4, num: "04", title: "AI Cash Flow Forecasting & Working Capital",
+    subtitle: "Real-Time Visibility, Not Stale Spreadsheets",
+    icon: null,
+    problem: "CFOs are flying blind on cash. Spreadsheet-based forecasts are stale the moment they're built, take days to update, and can't account for real-time changes in AR/AP, revenue, or market conditions. 68% of CFOs say they don't know where to start with AI — but cash forecasting is the single highest-ROI starting point for any finance team.",
+    solution: "AI analyzes historical cash patterns, AR/AP aging, seasonal trends, payment behaviors, and external market signals to generate rolling, real-time cash flow forecasts. The system runs continuous what-if scenarios ('What if our largest customer pays 15 days late?'), alerts the CFO to potential shortfalls, and recommends working capital actions — all queryable in natural language.",
+    impacts: [
+      { value: "85%+", label: "Forecast accuracy vs 60–70% manual", icon: null },
+      { value: "Real-time", label: "Rolling forecasts vs monthly manual updates", icon: "—" },
+      { value: "Instant", label: "Scenario modeling via natural language queries", icon: null },
+      { value: "15–25%", label: "Improvement in working capital efficiency", icon: "—" },
+    ],
+  },
+  {
+    id: 5, num: "05", title: "AI Expense Management & Spend Analytics",
+    subtitle: "Full Visibility Into Every Dollar",
+    icon: null,
+    problem: "Finance teams review expense reports manually — a tedious, fraud-prone process. Policy violations go undetected, duplicate claims slip through, and the CFO lacks real-time visibility into discretionary spend. Companies lose 5% of revenue annually to expense fraud and waste. Spend data sits in silos — credit cards, T&E platforms, procurement — making holistic analysis impossible.",
+    solution: "AI auto-categorizes every expense in real time, flags policy violations and suspicious claims before approval, identifies duplicate submissions, and surfaces cost-saving patterns across vendors and categories. The CFO gets a unified spend dashboard showing exactly where money is going — with anomaly alerts and benchmarking against industry norms.",
+    impacts: [
+      { value: "60–70%", label: "Reduction in manual expense review time", icon: "—" },
+      { value: "90%+", label: "Policy violations caught pre-approval", icon: null },
+      { value: "10–15%", label: "Reduction in discretionary spend", icon: "—" },
+      { value: "Real-time", label: "Unified spend visibility across all sources", icon: null },
+    ],
+  },
+  {
+    id: 6, num: "06", title: "AI Contract Analysis & Revenue Recognition",
+    subtitle: "ASC 606 / IFRS 15 on Autopilot",
+    icon: null,
+    problem: "Revenue recognition under ASC 606/IFRS 15 is complex — every contract must be analyzed for performance obligations, variable consideration, and timing. Finance teams read contracts manually, consult with legal, and build journal entries by hand. It's slow, error-prone, and a major audit risk. OpenAI's finance team uses a Contract Reader Bot — operating at 22% of typical headcount.",
+    solution: "AI reads contracts, extracts key financial terms (price, milestones, SLAs, renewal clauses, variable components), applies revenue recognition logic automatically, and generates compliant journal entries. The system flags ambiguous clauses for human review, maintains an audit trail, and adapts as standards evolve — turning weeks of manual work into minutes.",
+    impacts: [
+      { value: "80% faster", label: "Contract-to-journal entry cycle", icon: "—" },
+      { value: "99%+", label: "Accuracy in term extraction and classification", icon: null },
+      { value: "Zero", label: "Revenue recognition restatement risk", icon: null },
+      { value: "60–75%", label: "Reduction in finance headcount for rev rec", icon: "—" },
+    ],
+  },
+];
+
+// ─── Styles ───
+const fonts = `
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+`;
+
+const css = `
+  ${fonts}
+  :root {
+    --navy: #0B1929;
+    --navy-light: #132B43;
+    --teal: #0D9488;
+    --teal-deep: #065A60;
+    --mint: #14B8A6;
+    --accent: #F59E0B;
+    --coral: #EF4444;
+    --white: #FFFFFF;
+    --off-white: #F0FDFA;
+    --cream: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--navy);
+    color: var(--gray-400);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAVBAR ─── */
+  .navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(11,25,41,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-logo {
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-logo-mark {
+    width: 30px; height: 30px;
+    background: var(--white);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0;
+    line-height: 0;
+    padding: 0;
+    text-align: center;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .nav-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition: color 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .nav-link:hover { color: var(--white); }
+  .nav-link.active { color: var(--mint); }
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    background: var(--mint);
+    padding: 8px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .nav-cta:hover {
+    background: var(--white);
+    transform: translateY(-1px);
+  }
+
+  /* ─── HOMEPAGE HERO ─── */
+  .home-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: var(--navy);
+    overflow: hidden;
+    padding-top: 64px;
+  }
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    top: -300px; right: -200px;
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, rgba(13,148,136,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .home-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -200px; left: -150px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .home-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .home-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(13,148,136,0.12);
+    border: 1px solid rgba(13,148,136,0.25);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mint);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .home-hero-tag-dot {
+    width: 6px; height: 6px;
+    background: var(--mint);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  .home-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 60px);
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .home-hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--mint), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .home-hero-sub {
+    font-size: 17px;
+    color: var(--gray-400);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+  .home-hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--mint);
+    color: var(--navy);
+    padding: 14px 28px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .btn-primary:hover {
+    background: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -6px rgba(13,148,136,0.3);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--gray-400);
+    padding: 14px 28px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-secondary:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .home-hero-visual {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .hero-stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+  }
+  .hero-stat-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-4px);
+  }
+  .hero-stat-card:nth-child(2) { transform: translateY(24px); }
+  .hero-stat-card:nth-child(2):hover { transform: translateY(20px); }
+  .hero-stat-card:nth-child(3) { transform: translateY(-12px); }
+  .hero-stat-card:nth-child(3):hover { transform: translateY(-16px); }
+  .hero-stat-icon {
+    font-size: 28px;
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .hero-stat-val {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .hero-stat-lbl {
+    font-size: 12px;
+    color: var(--gray-400);
+    line-height: 1.4;
+  }
+
+  /* ─── HOMEPAGE SECTIONS ─── */
+  .home-section {
+    padding: 100px 0;
+  }
+  .home-section.dark {
+    background: var(--navy);
+  }
+  .home-section.dark + .home-section.dark {
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .section-tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mint);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 40px);
+    margin-bottom: 16px;
+  }
+  .section-title.light { color: var(--white); }
+  .section-sub {
+    font-size: 16px;
+    color: var(--gray-600);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+  .section-sub.light { color: var(--gray-400); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .service-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 36px 28px;
+    transition: all 0.35s;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px -12px rgba(0,0,0,0.1);
+    border-color: transparent;
+  }
+  .service-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .service-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: var(--gray-800);
+  }
+  .service-desc {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .process-step {
+    text-align: center;
+    padding: 32px 20px;
+  }
+  .process-num {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: var(--mint);
+    margin-bottom: 8px;
+  }
+  .process-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .process-desc {
+    font-size: 13px;
+    color: var(--gray-400);
+    line-height: 1.6;
+  }
+
+
+  /* ─── MASTER PAGE ─── */
+  .master-hero {
+    position: relative;
+    background: var(--navy);
+    padding: 140px 0 100px;
+    overflow: hidden;
+  }
+  .master-hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(13,148,136,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .master-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(13,148,136,0.15);
+    border: 1px solid rgba(13,148,136,0.3);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mint);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    background: var(--mint);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .master-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    max-width: 700px;
+  }
+  .master-title span {
+    background: linear-gradient(135deg, var(--mint), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .master-subtitle {
+    font-size: 17px;
+    color: var(--gray-400);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+  .stats-row {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    text-align: left;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--mint);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+  }
+
+  /* ─── INDUSTRY GRID ─── */
+  .grid-section {
+    padding: 80px 0 100px;
+    background: var(--navy);
+  }
+  .grid-section-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .grid-section-sub {
+    color: var(--gray-400);
+    font-size: 15px;
+    margin-bottom: 48px;
+    max-width: 500px;
+  }
+  .industry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .industry-card {
+    position: relative;
+    background: var(--navy-light);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+  }
+  .industry-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--card-accent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .industry-card:hover::before {
+    opacity: 1;
+  }
+  .industry-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px -15px rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.12);
+  }
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    background: rgba(255,255,255,0.06);
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .card-tagline {
+    font-size: 13px;
+    color: var(--gray-400);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--card-accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .card-arrow {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.06);
+    color: var(--gray-400);
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  .industry-card:hover .card-arrow {
+    background: var(--card-accent);
+    color: white;
+  }
+
+  /* ─── INDUSTRY DETAIL PAGE ─── */
+  .detail-page {
+    min-height: 100vh;
+    background: var(--navy);
+  }
+  .detail-hero {
+    position: relative;
+    padding: 120px 0 80px;
+    overflow: hidden;
+  }
+  .detail-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .detail-hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+  }
+  .back-btn {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.3s;
+    margin-bottom: 32px;
+  }
+  .back-btn:hover {
+    background: rgba(255,255,255,0.2);
+    color: white;
+  }
+  .detail-hero-content {
+    position: relative;
+    z-index: 2;
+  }
+  .detail-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .detail-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4.5vw, 48px);
+    color: white;
+    margin-bottom: 12px;
+  }
+  .detail-subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+  .detail-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .detail-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    padding: 16px 24px;
+  }
+  .detail-stat-val {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: white;
+  }
+  .detail-stat-lbl {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: 2px;
+  }
+
+  /* ─── USE CASE CARDS ─── */
+  .cases-section {
+    padding: 60px 0 100px;
+  }
+  .cases-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin-bottom: 40px;
+    color: var(--white);
+  }
+  .case-card {
+    background: var(--navy-light);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: all 0.35s;
+  }
+  .case-card:hover {
+    box-shadow: 0 12px 40px -10px rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.12);
+  }
+  .case-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 32px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .case-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--mint);
+    min-width: 48px;
+  }
+  .case-icon-wrap {
+    display: none;
+  }
+  .case-header-text {
+    flex: 1;
+  }
+  .case-header-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--white);
+  }
+  .case-header-sub {
+    font-size: 13px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+  .case-expand-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.06);
+    color: var(--gray-400);
+    font-size: 18px;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .case-card:hover .case-expand-btn {
+    background: var(--teal);
+    color: white;
+  }
+  .case-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .case-body.open {
+    max-height: 800px;
+  }
+  .case-body-inner {
+    padding: 0 32px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .case-section {
+    padding: 24px;
+    border-radius: var(--radius-sm);
+  }
+  .case-problem {
+    background: rgba(239,68,68,0.08);
+    border-left: 4px solid var(--coral);
+  }
+  .case-solution {
+    background: rgba(13,148,136,0.08);
+    border-left: 4px solid var(--teal);
+  }
+  .case-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+  .case-problem .case-section-label { color: #FCA5A5; }
+  .case-solution .case-section-label { color: var(--mint); }
+  .case-section-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray-400);
+  }
+  .case-impacts {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .impact-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    padding: 20px 16px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .impact-card:hover {
+    border-color: var(--teal);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px -6px rgba(13,148,136,0.2);
+  }
+  .impact-icon {
+    display: none;
+  }
+  .impact-value {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--mint);
+    margin-bottom: 4px;
+  }
+  .impact-label {
+    font-size: 11px;
+    color: var(--gray-400);
+    line-height: 1.4;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .home-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .home-hero-visual { display: none; }
+    .services-grid { grid-template-columns: 1fr; }
+    .process-grid { grid-template-columns: repeat(2, 1fr); }
+    .navbar { padding: 0 16px; }
+    .nav-links { gap: 16px; }
+    .home-section { padding: 72px 0; }
+    .home-hero-btns { flex-direction: column; align-items: flex-start; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+  }
+  @media (max-width: 768px) {
+    .case-body-inner { grid-template-columns: 1fr; }
+    .case-impacts { grid-template-columns: repeat(2, 1fr); }
+    .detail-stats { gap: 12px; flex-wrap: wrap; }
+    .detail-stat { flex: 1; min-width: 120px; padding: 12px 16px; }
+    .detail-stat-val { font-size: 20px; }
+    .detail-stat-lbl { font-size: 10px; }
+    .stats-row { gap: 20px; flex-wrap: wrap; }
+    .stat-item { min-width: 100px; }
+    .case-header { padding: 16px 20px; gap: 12px; }
+    .case-body-inner { padding: 0 20px 24px; }
+    .case-num { font-size: 22px; min-width: 36px; }
+    .case-header-title { font-size: 16px; }
+    .case-section { padding: 20px; }
+    .case-section-text { font-size: 13px; }
+    .detail-hero { padding: 100px 0 60px; }
+    .detail-title { font-size: 28px; }
+    .detail-subtitle { font-size: 14px; }
+    .detail-icon { font-size: 36px; }
+    .industry-grid { grid-template-columns: 1fr; }
+    .container { padding: 0 20px; }
+    .master-hero { padding: 100px 0 60px; }
+    .master-title { font-size: 28px; }
+    .master-subtitle { font-size: 14px; }
+    .grid-section { padding: 60px 0; }
+    .cases-section { padding: 40px 0 80px; }
+    .cases-title { font-size: 22px; }
+    .back-btn { font-size: 13px; padding: 6px 14px; }
+    .home-section { padding: 60px 0; }
+    .section-title { font-size: 26px; }
+    .section-sub { font-size: 14px; margin-bottom: 32px; }
+    .page-footer { padding: 48px 0 36px; }
+    .footer-cta { font-size: 14px; padding: 12px 24px; }
+  }
+  @media (max-width: 480px) {
+    .case-impacts { grid-template-columns: 1fr; }
+    .detail-stats { flex-direction: column; }
+    .detail-stat { width: 100%; }
+    .detail-hero { padding: 80px 0 48px; }
+    .navbar { height: 56px; }
+    .nav-logo { font-size: 16px; gap: 8px; }
+    .nav-logo-mark { width: 26px; height: 26px; font-size: 15px; }
+    .nav-link { font-size: 11px; letter-spacing: 0.5px; }
+    .nav-cta { font-size: 11px; padding: 6px 14px; }
+    .nav-links { gap: 10px; }
+    .home-hero { padding-top: 56px; min-height: auto; padding-bottom: 60px; }
+    .home-hero h1 { font-size: 26px; }
+    .home-hero-sub { font-size: 14px; }
+    .home-hero-tag { font-size: 10px; padding: 5px 12px; }
+    .btn-primary, .btn-secondary { padding: 12px 20px; font-size: 13px; }
+    .section-title { font-size: 22px; }
+    .section-tag { font-size: 11px; }
+    .home-section { padding: 48px 0; }
+    .process-grid { grid-template-columns: 1fr; gap: 16px; }
+    .process-num { font-size: 36px; }
+    .process-step { padding: 24px 16px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .service-card { padding: 28px 24px; }
+    .card-title { font-size: 18px; }
+    .card-icon { width: 40px; height: 40px; font-size: 20px; }
+    .master-hero { padding: 80px 0 48px; }
+    .master-title { font-size: 24px; }
+    .stat-value { font-size: 22px; }
+    .stat-label { font-size: 10px; }
+    .container { padding: 0 16px; }
+    .modal-overlay { align-items: flex-end; }
+    .modal-card { padding: 32px 24px; margin: 0; border-radius: var(--radius) var(--radius) 0 0; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 20px; }
+    .form-input, .form-select { font-size: 16px; }
+    .footer-brand { flex-direction: column; gap: 8px; }
+    .footer-text { font-size: 13px; }
+    .back-btn { font-size: 12px; padding: 6px 12px; margin-bottom: 20px; }
+    .case-header-sub { font-size: 12px; }
+    .case-expand-btn { width: 32px; height: 32px; font-size: 16px; }
+    .impact-value { font-size: 18px; }
+    .impact-label { font-size: 10px; }
+    .hero-badge { font-size: 11px; }
+  }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+
+  /* ─── FOOTER ─── */
+  .page-footer {
+    background: var(--navy);
+    padding: 64px 0 48px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-text {
+    color: var(--gray-400);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .footer-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--mint);
+    color: var(--navy);
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    font-family: var(--font-body);
+  }
+  .footer-cta:hover {
+    background: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -6px rgba(13,148,136,0.4);
+  }
+  .footer-brand {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .footer-logo-mark {
+    width: 24px; height: 24px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--gray-400);
+    line-height: 0;
+  }
+  .footer-copy {
+    font-size: 12px;
+    color: var(--gray-400);
+    opacity: 0.6;
+  }
+
+  /* ─── BRIEFING MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal-card {
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: var(--gray-400);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--white);
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .modal-sub {
+    font-size: 14px;
+    color: var(--gray-400);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    font-size: 14px;
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus {
+    border-color: var(--mint);
+  }
+  .form-input::placeholder {
+    color: rgba(255,255,255,0.25);
+  }
+  .form-select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    font-size: 14px;
+    font-family: var(--font-body);
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  .form-select option {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .form-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--mint);
+    color: var(--navy);
+    border: none;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 8px;
+  }
+  .form-submit:hover {
+    background: var(--white);
+    transform: translateY(-1px);
+  }
+  .form-success {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .form-success-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .form-success-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .form-success-text {
+    font-size: 14px;
+    color: var(--gray-400);
+    line-height: 1.6;
+  }
+`;
+
+// ─── Master Landing Page ───
+function MasterPage({ onSelectIndustry, onOpenBriefing }) {
+  return (
+    <div>
+      <div className="master-hero">
+        <div className="container">
+          <div className="hero-badge animate-in" style={{ animationDelay: "0.1s" }}>
+            <span className="hero-badge-dot" />
+            mirai labs — Use Case Library
+          </div>
+          <h1 className="master-title animate-in" style={{ animationDelay: "0.2s" }}>
+            Where AI Can Move <br />the Needle in <span>Your Business</span>
+          </h1>
+          <p className="master-subtitle animate-in" style={{ animationDelay: "0.3s" }}>
+            We've mapped out the highest-potential AI opportunities across industries and business functions — the problems worth solving, the approaches that work, and the outcomes organizations are chasing.
+          </p>
+          <div className="stats-row animate-in" style={{ animationDelay: "0.4s" }}>
+            <div className="stat-item">
+              <div className="stat-value">5</div>
+              <div className="stat-label">Domains Covered</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-value">28</div>
+              <div className="stat-label">AI Opportunities Mapped</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-value">81%</div>
+              <div className="stat-label">Teams Adopting AI in 2026</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-value">5–7x</div>
+              <div className="stat-label">Potential Performance Lift</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid-section">
+        <div className="container">
+          <h2 className="grid-section-title">Explore by Domain</h2>
+          <p className="grid-section-sub">Double-click any card to explore AI use cases tailored for that domain — each with a clear problem, solution approach, and expected impact.</p>
+          <div className="industry-grid">
+            {INDUSTRIES.map((ind, i) => (
+              <div
+                key={ind.id}
+                className="industry-card animate-in"
+                style={{ "--card-accent": ind.color, animationDelay: `${0.1 + i * 0.08}s` }}
+                onDoubleClick={() => onSelectIndustry(ind.id)}
+              >
+                <span className="card-icon">{ind.icon}</span>
+                <div className="card-title">{ind.name}</div>
+                <div className="card-tagline">{ind.tagline}</div>
+                <div className="card-footer">
+                  <span className="card-count" style={{ color: ind.color }}>
+                    {ind.count} Use Cases
+                  </span>
+                  <span className="card-arrow">→</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── Healthcare Detail Page ───
+function HealthcarePage({ onBack, onOpenBriefing }) {
+  const [openCase, setOpenCase] = useState(null);
+  const industry = INDUSTRIES.find((i) => i.id === "healthcare");
+
+  return (
+    <div className="detail-page">
+      <div className="detail-hero" style={{ background: industry.gradient }}>
+        <div className="detail-hero-bg" />
+        <div className="container">
+          <div className="detail-hero-content">
+            <div className="back-btn animate-in" style={{ animationDelay: "0.1s" }} onClick={onBack}>
+              ← All Domains
+            </div>
+            <span className="detail-icon animate-in" style={{ animationDelay: "0.15s" }}>{industry.icon}</span>
+            <h1 className="detail-title animate-in" style={{ animationDelay: "0.2s" }}>{industry.name}</h1>
+            <p className="detail-subtitle animate-in" style={{ animationDelay: "0.3s" }}>
+              Exploring how AI can reshape clinical operations, revenue cycles, and patient engagement — with the approaches and outcomes leading health systems are targeting.
+            </p>
+            <div className="detail-stats animate-in" style={{ animationDelay: "0.4s" }}>
+              <div className="detail-stat">
+                <div className="detail-stat-val">6</div>
+                <div className="detail-stat-lbl">Use Cases</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">$45B+</div>
+                <div className="detail-stat-lbl">AI Market Size</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">950+</div>
+                <div className="detail-stat-lbl">FDA-Cleared AI</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">5:1</div>
+                <div className="detail-stat-lbl">Average ROI</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="cases-section">
+        <div className="container">
+          <h2 className="cases-title">Use Cases</h2>
+          {HEALTHCARE_CASES.map((uc, i) => (
+            <div
+              key={uc.id}
+              className="case-card animate-in"
+              style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+            >
+              <div className="case-header" onClick={() => setOpenCase(openCase === uc.id ? null : uc.id)}>
+                <span className="case-num">{uc.num}</span>
+                <span className="case-icon-wrap">{uc.icon}</span>
+                <div className="case-header-text">
+                  <div className="case-header-title">{uc.title}</div>
+                  <div className="case-header-sub">{uc.subtitle}</div>
+                </div>
+                <span className="case-expand-btn">{openCase === uc.id ? "−" : "+"}</span>
+              </div>
+              <div className={`case-body ${openCase === uc.id ? "open" : ""}`}>
+                <div className="case-body-inner">
+                  <div className="case-section case-problem">
+                    <div className="case-section-label">The Problem</div>
+                    <div className="case-section-text">{uc.problem}</div>
+                  </div>
+                  <div className="case-section case-solution">
+                    <div className="case-section-label">The Approach</div>
+                    <div className="case-section-text">{uc.solution}</div>
+                  </div>
+                  <div className="case-impacts">
+                    {uc.impacts.map((imp, j) => (
+                      <div key={j} className="impact-card">
+                        <span className="impact-icon">{imp.icon}</span>
+                        <div className="impact-value">{imp.value}</div>
+                        <div className="impact-label">{imp.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── Audit / CPA Detail Page ───
+function AuditPage({ onBack, onOpenBriefing }) {
+  const [openCase, setOpenCase] = useState(null);
+  const industry = INDUSTRIES.find((i) => i.id === "audit");
+
+  return (
+    <div className="detail-page">
+      <div className="detail-hero" style={{ background: industry.gradient }}>
+        <div className="detail-hero-bg" />
+        <div className="container">
+          <div className="detail-hero-content">
+            <div className="back-btn animate-in" style={{ animationDelay: "0.1s" }} onClick={onBack}>
+              ← All Domains
+            </div>
+            <span className="detail-icon animate-in" style={{ animationDelay: "0.15s" }}>{industry.icon}</span>
+            <h1 className="detail-title animate-in" style={{ animationDelay: "0.2s" }}>{industry.name}</h1>
+            <p className="detail-subtitle animate-in" style={{ animationDelay: "0.3s" }}>
+              Exploring how AI can automate tax processing, audit evidence gathering, reconciliation, and advisory workflows — enabling firms to scale without scaling headcount.
+            </p>
+            <div className="detail-stats animate-in" style={{ animationDelay: "0.4s" }}>
+              <div className="detail-stat">
+                <div className="detail-stat-val">6</div>
+                <div className="detail-stat-lbl">Use Cases</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">$37.6B</div>
+                <div className="detail-stat-lbl">AI in Accounting by 2030</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">41%</div>
+                <div className="detail-stat-lbl">CAGR 2025–2030</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">Big 4</div>
+                <div className="detail-stat-lbl">All Investing in AI Audit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="cases-section">
+        <div className="container">
+          <h2 className="cases-title">Use Cases</h2>
+          {AUDIT_CASES.map((uc, i) => (
+            <div
+              key={uc.id}
+              className="case-card animate-in"
+              style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+            >
+              <div className="case-header" onClick={() => setOpenCase(openCase === uc.id ? null : uc.id)}>
+                <span className="case-num">{uc.num}</span>
+                <span className="case-icon-wrap">{uc.icon}</span>
+                <div className="case-header-text">
+                  <div className="case-header-title">{uc.title}</div>
+                  <div className="case-header-sub">{uc.subtitle}</div>
+                </div>
+                <span className="case-expand-btn">{openCase === uc.id ? "−" : "+"}</span>
+              </div>
+              <div className={`case-body ${openCase === uc.id ? "open" : ""}`}>
+                <div className="case-body-inner">
+                  <div className="case-section case-problem">
+                    <div className="case-section-label">The Problem</div>
+                    <div className="case-section-text">{uc.problem}</div>
+                  </div>
+                  <div className="case-section case-solution">
+                    <div className="case-section-label">The Approach</div>
+                    <div className="case-section-text">{uc.solution}</div>
+                  </div>
+                  <div className="case-impacts">
+                    {uc.impacts.map((imp, j) => (
+                      <div key={j} className="impact-card">
+                        <span className="impact-icon">{imp.icon}</span>
+                        <div className="impact-value">{imp.value}</div>
+                        <div className="impact-label">{imp.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── Talent Acquisition Detail Page ───
+function TalentPage({ onBack, onOpenBriefing }) {
+  const [openCase, setOpenCase] = useState(null);
+  const industry = INDUSTRIES.find((i) => i.id === "talent");
+
+  return (
+    <div className="detail-page">
+      <div className="detail-hero" style={{ background: industry.gradient }}>
+        <div className="detail-hero-bg" />
+        <div className="container">
+          <div className="detail-hero-content">
+            <div className="back-btn animate-in" style={{ animationDelay: "0.1s" }} onClick={onBack}>
+              ← All Domains
+            </div>
+            <span className="detail-icon animate-in" style={{ animationDelay: "0.15s" }}>{industry.icon}</span>
+            <h1 className="detail-title animate-in" style={{ animationDelay: "0.2s" }}>{industry.name}</h1>
+            <p className="detail-subtitle animate-in" style={{ animationDelay: "0.3s" }}>
+              Exploring how AI can help agencies source faster, engage smarter, and place more candidates — without scaling headcount proportionally.
+            </p>
+            <div className="detail-stats animate-in" style={{ animationDelay: "0.4s" }}>
+              <div className="detail-stat">
+                <div className="detail-stat-val">5</div>
+                <div className="detail-stat-lbl">Use Cases</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">84%</div>
+                <div className="detail-stat-lbl">TA Leaders Using AI in 2026</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">40%</div>
+                <div className="detail-stat-lbl">Reduction in Time-to-Hire</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">92%</div>
+                <div className="detail-stat-lbl">Firms Seeing AI Benefits</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="cases-section">
+        <div className="container">
+          <h2 className="cases-title">Use Cases</h2>
+          {TALENT_CASES.map((uc, i) => (
+            <div
+              key={uc.id}
+              className="case-card animate-in"
+              style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+            >
+              <div className="case-header" onClick={() => setOpenCase(openCase === uc.id ? null : uc.id)}>
+                <span className="case-num">{uc.num}</span>
+                <span className="case-icon-wrap">{uc.icon}</span>
+                <div className="case-header-text">
+                  <div className="case-header-title">{uc.title}</div>
+                  <div className="case-header-sub">{uc.subtitle}</div>
+                </div>
+                <span className="case-expand-btn">{openCase === uc.id ? "−" : "+"}</span>
+              </div>
+              <div className={`case-body ${openCase === uc.id ? "open" : ""}`}>
+                <div className="case-body-inner">
+                  <div className="case-section case-problem">
+                    <div className="case-section-label">The Problem</div>
+                    <div className="case-section-text">{uc.problem}</div>
+                  </div>
+                  <div className="case-section case-solution">
+                    <div className="case-section-label">The Approach</div>
+                    <div className="case-section-text">{uc.solution}</div>
+                  </div>
+                  <div className="case-impacts">
+                    {uc.impacts.map((imp, j) => (
+                      <div key={j} className="impact-card">
+                        <span className="impact-icon">{imp.icon}</span>
+                        <div className="impact-value">{imp.value}</div>
+                        <div className="impact-label">{imp.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── Go-to-Market / Sales Detail Page ───
+function GTMPage({ onBack, onOpenBriefing }) {
+  const [openCase, setOpenCase] = useState(null);
+  const industry = INDUSTRIES.find((i) => i.id === "gtm");
+
+  return (
+    <div className="detail-page">
+      <div className="detail-hero" style={{ background: industry.gradient }}>
+        <div className="detail-hero-bg" />
+        <div className="container">
+          <div className="detail-hero-content">
+            <div className="back-btn animate-in" style={{ animationDelay: "0.1s" }} onClick={onBack}>
+              ← All Domains
+            </div>
+            <span className="detail-icon animate-in" style={{ animationDelay: "0.15s" }}>{industry.icon}</span>
+            <h1 className="detail-title animate-in" style={{ animationDelay: "0.2s" }}>{industry.name}</h1>
+            <p className="detail-subtitle animate-in" style={{ animationDelay: "0.3s" }}>
+              Exploring how AI can power pipeline generation, sharpen deal intelligence, and optimize revenue operations — turning manual GTM into a scalable growth engine.
+            </p>
+            <div className="detail-stats animate-in" style={{ animationDelay: "0.4s" }}>
+              <div className="detail-stat">
+                <div className="detail-stat-val">5</div>
+                <div className="detail-stat-lbl">Use Cases</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">12 hrs/wk</div>
+                <div className="detail-stat-lbl">Saved by AI GTM Users</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">5x</div>
+                <div className="detail-stat-lbl">Revenue Growth with AI GTM</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">81%</div>
+                <div className="detail-stat-lbl">Sales Teams Using AI</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="cases-section">
+        <div className="container">
+          <h2 className="cases-title">Use Cases</h2>
+          {GTM_CASES.map((uc, i) => (
+            <div
+              key={uc.id}
+              className="case-card animate-in"
+              style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+            >
+              <div className="case-header" onClick={() => setOpenCase(openCase === uc.id ? null : uc.id)}>
+                <span className="case-num">{uc.num}</span>
+                <span className="case-icon-wrap">{uc.icon}</span>
+                <div className="case-header-text">
+                  <div className="case-header-title">{uc.title}</div>
+                  <div className="case-header-sub">{uc.subtitle}</div>
+                </div>
+                <span className="case-expand-btn">{openCase === uc.id ? "−" : "+"}</span>
+              </div>
+              <div className={`case-body ${openCase === uc.id ? "open" : ""}`}>
+                <div className="case-body-inner">
+                  <div className="case-section case-problem">
+                    <div className="case-section-label">The Problem</div>
+                    <div className="case-section-text">{uc.problem}</div>
+                  </div>
+                  <div className="case-section case-solution">
+                    <div className="case-section-label">The Approach</div>
+                    <div className="case-section-text">{uc.solution}</div>
+                  </div>
+                  <div className="case-impacts">
+                    {uc.impacts.map((imp, j) => (
+                      <div key={j} className="impact-card">
+                        <span className="impact-icon">{imp.icon}</span>
+                        <div className="impact-value">{imp.value}</div>
+                        <div className="impact-label">{imp.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── CFO Office / Finance Detail Page ───
+function CFOPage({ onBack, onOpenBriefing }) {
+  const [openCase, setOpenCase] = useState(null);
+  const industry = INDUSTRIES.find((i) => i.id === "cfo");
+
+  return (
+    <div className="detail-page">
+      <div className="detail-hero" style={{ background: industry.gradient }}>
+        <div className="detail-hero-bg" />
+        <div className="container">
+          <div className="detail-hero-content">
+            <div className="back-btn animate-in" style={{ animationDelay: "0.1s" }} onClick={onBack}>
+              ← All Domains
+            </div>
+            <span className="detail-icon animate-in" style={{ animationDelay: "0.15s" }}>{industry.icon}</span>
+            <h1 className="detail-title animate-in" style={{ animationDelay: "0.2s" }}>{industry.name}</h1>
+            <p className="detail-subtitle animate-in" style={{ animationDelay: "0.3s" }}>
+              Exploring how AI can accelerate the close, automate AP/AR, sharpen cash forecasting, and help finance teams shift from number crunching to strategic partnership.
+            </p>
+            <div className="detail-stats animate-in" style={{ animationDelay: "0.4s" }}>
+              <div className="detail-stat">
+                <div className="detail-stat-val">6</div>
+                <div className="detail-stat-lbl">Use Cases</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">60%</div>
+                <div className="detail-stat-lbl">Finance Teams Piloting AI</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">20–30%</div>
+                <div className="detail-stat-lbl">Less Time Crunching Data</div>
+              </div>
+              <div className="detail-stat">
+                <div className="detail-stat-val">4x</div>
+                <div className="detail-stat-lbl">AI Adoption in AP YoY</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="cases-section">
+        <div className="container">
+          <h2 className="cases-title">Use Cases</h2>
+          {CFO_CASES.map((uc, i) => (
+            <div
+              key={uc.id}
+              className="case-card animate-in"
+              style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+            >
+              <div className="case-header" onClick={() => setOpenCase(openCase === uc.id ? null : uc.id)}>
+                <span className="case-num">{uc.num}</span>
+                <span className="case-icon-wrap">{uc.icon}</span>
+                <div className="case-header-text">
+                  <div className="case-header-title">{uc.title}</div>
+                  <div className="case-header-sub">{uc.subtitle}</div>
+                </div>
+                <span className="case-expand-btn">{openCase === uc.id ? "−" : "+"}</span>
+              </div>
+              <div className={`case-body ${openCase === uc.id ? "open" : ""}`}>
+                <div className="case-body-inner">
+                  <div className="case-section case-problem">
+                    <div className="case-section-label">The Problem</div>
+                    <div className="case-section-text">{uc.problem}</div>
+                  </div>
+                  <div className="case-section case-solution">
+                    <div className="case-section-label">The Approach</div>
+                    <div className="case-section-text">{uc.solution}</div>
+                  </div>
+                  <div className="case-impacts">
+                    {uc.impacts.map((imp, j) => (
+                      <div key={j} className="impact-card">
+                        <span className="impact-icon">{imp.icon}</span>
+                        <div className="impact-value">{imp.value}</div>
+                        <div className="impact-label">{imp.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── Homepage ───
+function HomePage({ onNavigate, onOpenBriefing }) {
+  return (
+    <div>
+      <div className="home-hero">
+        <div className="container">
+          <div className="home-hero-grid">
+            <div>
+              <div className="home-hero-tag animate-in" style={{ animationDelay: "0.1s" }}>
+                <span className="home-hero-tag-dot" />
+                Enterprise AI Partner
+              </div>
+              <h1 className="animate-in" style={{ animationDelay: "0.2s" }}>
+                From AI strategy to <em>deployed systems</em> — in weeks, not quarters.
+              </h1>
+              <p className="home-hero-sub animate-in" style={{ animationDelay: "0.3s" }}>
+                Mirai Labs partners with enterprise leaders to design, build, and deploy production-grade AI systems — purpose-built for your workflows, your data, and your business context.
+              </p>
+              <div className="home-hero-btns animate-in" style={{ animationDelay: "0.4s" }}>
+                <button className="btn-primary" onClick={() => onNavigate(PAGES.USE_CASES)}>
+                  Explore Use Cases →
+                </button>
+                <button className="btn-secondary" onClick={onOpenBriefing}>
+                  Schedule a Briefing
+                </button>
+              </div>
+            </div>
+            <div className="home-hero-visual animate-in" style={{ animationDelay: "0.5s" }}>
+              <div className="hero-stat-card">
+                <span className="hero-stat-icon">🏥</span>
+                <div className="hero-stat-val">Healthcare</div>
+                <div className="hero-stat-lbl">Clinical workflows, revenue cycle, patient operations</div>
+              </div>
+              <div className="hero-stat-card">
+                <span className="hero-stat-icon">📊</span>
+                <div className="hero-stat-val">Audit & CPA</div>
+                <div className="hero-stat-lbl">Tax automation, audit evidence, reconciliation</div>
+              </div>
+              <div className="hero-stat-card">
+                <span className="hero-stat-icon">📈</span>
+                <div className="hero-stat-val">GTM / Sales</div>
+                <div className="hero-stat-lbl">Pipeline generation, deal intelligence, revenue ops</div>
+              </div>
+              <div className="hero-stat-card">
+                <span className="hero-stat-icon">💼</span>
+                <div className="hero-stat-val">CFO Office</div>
+                <div className="hero-stat-lbl">Close automation, AP/AR, cash flow forecasting</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Capabilities Section — dark */}
+      <div className="home-section dark">
+        <div className="container">
+          <div className="section-tag">Capabilities</div>
+          <h2 className="section-title light">We meet you wherever you are in your AI journey.</h2>
+          <p className="section-sub light">Whether you're evaluating your first use case or scaling AI across the enterprise, we bring the expertise, infrastructure, and execution discipline to move fast and deliver real outcomes.</p>
+          <div className="services-grid">
+            <div className="service-card" style={{ background: "var(--navy-light)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="service-icon" style={{ background: "rgba(13,148,136,0.12)" }}>🔍</div>
+              <div className="service-title" style={{ color: "var(--white)" }}>AI Assessment & Roadmap</div>
+              <div className="service-desc" style={{ color: "var(--gray-400)" }}>We evaluate your data landscape, operational workflows, and strategic priorities to identify AI opportunities ranked by business impact, technical feasibility, and speed to value.</div>
+            </div>
+            <div className="service-card" style={{ background: "var(--navy-light)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="service-icon" style={{ background: "rgba(79,70,229,0.12)" }}>⚡</div>
+              <div className="service-title" style={{ color: "var(--white)" }}>Rapid Proof of Value</div>
+              <div className="service-desc" style={{ color: "var(--gray-400)" }}>Focused 4–6 week engagements that validate AI use cases against your real data and workflows — with measurable KPIs defined upfront, not after the fact.</div>
+            </div>
+            <div className="service-card" style={{ background: "var(--navy-light)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="service-icon" style={{ background: "rgba(245,158,11,0.12)" }}>🏗️</div>
+              <div className="service-title" style={{ color: "var(--white)" }}>Production Deployment & Scale</div>
+              <div className="service-desc" style={{ color: "var(--gray-400)" }}>Enterprise-grade deployment with system integration, security, monitoring, and governance — built for uptime, auditability, and cross-functional adoption.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Use Cases Section — slightly lighter dark */}
+      <div className="home-section dark">
+        <div className="container">
+          <div className="section-tag">Use Cases</div>
+          <h2 className="section-title light">AI opportunities mapped across enterprise functions.</h2>
+          <p className="section-sub light">We've catalogued the highest-potential AI applications across industries and business functions — each with a defined problem, solution architecture, and projected impact. Explore what's possible.</p>
+          <div className="industry-grid" style={{ marginBottom: "40px" }}>
+            {INDUSTRIES.map((ind, i) => (
+              <div
+                key={ind.id}
+                className="industry-card animate-in"
+                style={{ "--card-accent": ind.color, animationDelay: `${0.1 + i * 0.08}s` }}
+                onDoubleClick={() => onNavigate(PAGES.DETAIL, ind.id)}
+              >
+                <span className="card-icon">{ind.icon}</span>
+                <div className="card-title">{ind.name}</div>
+                <div className="card-tagline">{ind.tagline}</div>
+                <div className="card-footer">
+                  <span className="card-count" style={{ color: ind.color }}>{ind.count} Use Cases</span>
+                  <span className="card-arrow">→</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="btn-primary" onClick={() => onNavigate(PAGES.USE_CASES)}>
+            View All Use Cases →
+          </button>
+        </div>
+      </div>
+
+      {/* Process Section */}
+      <div className="home-section dark">
+        <div className="container">
+          <div className="section-tag">Engagement Model</div>
+          <h2 className="section-title light">Structured for speed. Built for enterprise.</h2>
+          <p className="section-sub light" style={{ marginBottom: "40px" }}>Every engagement follows a disciplined four-phase framework — designed to compress time-to-value while maintaining the rigor enterprise stakeholders require.</p>
+          <div className="process-grid">
+            {[
+              { num: "01", title: "Assess", desc: "Deep-dive into your data, workflows, and strategic objectives to surface the highest-ROI AI opportunities." },
+              { num: "02", title: "Architect", desc: "Solution design — model selection, data pipelines, integration architecture, and success criteria defined collaboratively." },
+              { num: "03", title: "Validate", desc: "A focused proof of value with production data and real users, delivering measurable outcomes in 4–6 weeks." },
+              { num: "04", title: "Deploy", desc: "Production rollout with monitoring, governance, change management, and a roadmap for cross-functional scaling." },
+            ].map((step, i) => (
+              <div key={i} className="process-step animate-in" style={{ animationDelay: `${0.1 + i * 0.1}s` }}>
+                <div className="process-num">{step.num}</div>
+                <div className="process-title">{step.title}</div>
+                <div className="process-desc">{step.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <SiteFooter onOpenBriefing={onOpenBriefing} />
+    </div>
+  );
+}
+
+// ─── Briefing Modal ───
+function BriefingModal({ onClose }) {
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal-card">
+        <button className="modal-close" onClick={onClose}>×</button>
+        {!submitted ? (
+          <>
+            <div className="modal-title">Schedule a Briefing</div>
+            <div className="modal-sub">A 30-minute conversation to evaluate where AI can drive measurable impact in your organization. No obligations.</div>
+            <div onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input className="form-input" placeholder="John Smith" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Work Email</label>
+                <input className="form-input" type="email" placeholder="john@company.com" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Company</label>
+                <input className="form-input" placeholder="Acme Corp" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Area of Interest</label>
+                <select className="form-select">
+                  <option value="">Select a domain...</option>
+                  <option>Healthcare</option>
+                  <option>Audit & CPA Firms</option>
+                  <option>Talent Acquisition</option>
+                  <option>Go-to-Market / Sales</option>
+                  <option>CFO Office / Finance</option>
+                  <option>Other / Not Sure Yet</option>
+                </select>
+              </div>
+              <button className="form-submit" type="button" onClick={handleSubmit}>Submit Request →</button>
+            </div>
+          </>
+        ) : (
+          <div className="form-success">
+            <span className="form-success-icon">✓</span>
+            <div className="form-success-title">Request Received</div>
+            <div className="form-success-text">Thank you. A member of our team will reach out within 24 hours to schedule your briefing.</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Footer Component ───
+function SiteFooter({ onOpenBriefing }) {
+  return (
+    <div className="page-footer">
+      <div className="container">
+        <button className="footer-cta" onClick={onOpenBriefing}>Schedule a Briefing →</button>
+        <p className="footer-text">A 30-minute conversation to evaluate where AI can drive measurable impact in your organization. No obligations.</p>
+        <div className="footer-brand">
+          <span className="footer-logo-mark">m</span>
+          <span className="footer-copy">© 2026 mirai labs. All rights reserved.</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App Shell ───
+export default function App() {
+  const [page, setPage] = useState(PAGES.HOME);
+  const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [showBriefing, setShowBriefing] = useState(false);
+
+  const navigate = (target, industryId = null) => {
+    setPage(target);
+    setSelectedIndustry(industryId);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50);
+  };
+
+  const openBriefing = () => setShowBriefing(true);
+
+  return (
+    <div>
+      <style>{css}</style>
+
+      {/* Navbar */}
+      <div className="navbar">
+        <div className="nav-logo" onClick={() => navigate(PAGES.HOME)}>
+          <span className="nav-logo-mark">m</span>
+          mirai labs
+        </div>
+        <div className="nav-links">
+          <span className={`nav-link ${page === PAGES.HOME ? "active" : ""}`} onClick={() => navigate(PAGES.HOME)}>Home</span>
+          <span className={`nav-link ${page === PAGES.USE_CASES || page === PAGES.DETAIL ? "active" : ""}`} onClick={() => navigate(PAGES.USE_CASES)}>Use Cases</span>
+          <button className="nav-cta" onClick={openBriefing}>Schedule a Briefing</button>
+        </div>
+      </div>
+
+      {/* Pages */}
+      {page === PAGES.HOME && <HomePage onNavigate={navigate} onOpenBriefing={openBriefing} />}
+      {page === PAGES.USE_CASES && <MasterPage onSelectIndustry={(id) => navigate(PAGES.DETAIL, id)} onOpenBriefing={openBriefing} />}
+      {page === PAGES.DETAIL && selectedIndustry === "healthcare" && <HealthcarePage onBack={() => navigate(PAGES.USE_CASES)} onOpenBriefing={openBriefing} />}
+      {page === PAGES.DETAIL && selectedIndustry === "audit" && <AuditPage onBack={() => navigate(PAGES.USE_CASES)} onOpenBriefing={openBriefing} />}
+      {page === PAGES.DETAIL && selectedIndustry === "talent" && <TalentPage onBack={() => navigate(PAGES.USE_CASES)} onOpenBriefing={openBriefing} />}
+      {page === PAGES.DETAIL && selectedIndustry === "gtm" && <GTMPage onBack={() => navigate(PAGES.USE_CASES)} onOpenBriefing={openBriefing} />}
+      {page === PAGES.DETAIL && selectedIndustry === "cfo" && <CFOPage onBack={() => navigate(PAGES.USE_CASES)} onOpenBriefing={openBriefing} />}
+
+      {/* Briefing Modal */}
+      {showBriefing && <BriefingModal onClose={() => setShowBriefing(false)} />}
+    </div>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
