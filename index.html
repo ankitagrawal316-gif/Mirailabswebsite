@@ -6,6 +6,9 @@
   <title>Mirai Labs — Enterprise AI Partner</title>
   <meta name="description" content="Mirai Labs partners with enterprise leaders to design, build, and deploy production-grade AI systems. Explore AI use cases across healthcare, audit, sales, finance, and talent acquisition.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B1929'/><text x='50' y='68' font-size='60' font-weight='900' text-anchor='middle' fill='white' font-family='sans-serif'>m</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
   </style>
@@ -16,7 +19,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
   <script type="text/babel">
-import { useState, useEffect, useRef } from "react";
+const { useState, useEffect, useRef } = React;
 
 const PAGES = { HOME: "home", USE_CASES: "use_cases", DETAIL: "detail" };
 const INDUSTRIES = [
@@ -407,12 +410,7 @@ const CFO_CASES = [
 ];
 
 // ─── Styles ───
-const fonts = `
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-`;
-
 const css = `
-  ${fonts}
   :root {
     --navy: #0B1929;
     --navy-light: #132B43;
@@ -2239,7 +2237,7 @@ function SiteFooter({ onOpenBriefing }) {
 }
 
 // ─── App Shell ───
-export default function App() {
+function App() {
   const [page, setPage] = useState(PAGES.HOME);
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showBriefing, setShowBriefing] = useState(false);
