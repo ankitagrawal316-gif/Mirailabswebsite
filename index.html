@@ -9,12 +9,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-  </style>
+  <style>* { margin: 0; padding: 0; box-sizing: border-box; }</style>
 </head>
 <body>
   <div id="root"></div>
+  <!-- Netlify hidden form for bot detection -->
+  <form name="briefing" netlify netlify-honeypot="bot-field" hidden>
+    <input name="bot-field">
+    <input name="name">
+    <input name="email">
+    <input name="company">
+    <input name="interest">
+  </form>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
@@ -1125,7 +1131,7 @@ const css = `
     transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .case-body.open {
-    max-height: 800px;
+    max-height: 2000px;
   }
   .case-body-inner {
     padding: 0 32px 32px;
@@ -1207,91 +1213,126 @@ const css = `
   @media (max-width: 900px) {
     .home-hero-grid { grid-template-columns: 1fr; gap: 40px; }
     .home-hero-visual { display: none; }
+    .home-hero { min-height: auto; padding-bottom: 80px; }
     .services-grid { grid-template-columns: 1fr; }
     .process-grid { grid-template-columns: repeat(2, 1fr); }
     .navbar { padding: 0 16px; }
     .nav-links { gap: 16px; }
     .home-section { padding: 72px 0; }
-    .home-hero-btns { flex-direction: column; align-items: flex-start; }
+    .home-hero-btns { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
   }
+
   @media (max-width: 768px) {
-    .case-body-inner { grid-template-columns: 1fr; }
-    .case-impacts { grid-template-columns: repeat(2, 1fr); }
-    .detail-stats { gap: 12px; flex-wrap: wrap; }
-    .detail-stat { flex: 1; min-width: 120px; padding: 12px 16px; }
-    .detail-stat-val { font-size: 20px; }
-    .detail-stat-lbl { font-size: 10px; }
-    .stats-row { gap: 20px; flex-wrap: wrap; }
-    .stat-item { min-width: 100px; }
-    .case-header { padding: 16px 20px; gap: 12px; }
-    .case-body-inner { padding: 0 20px 24px; }
-    .case-num { font-size: 22px; min-width: 36px; }
-    .case-header-title { font-size: 16px; }
-    .case-section { padding: 20px; }
-    .case-section-text { font-size: 13px; }
-    .detail-hero { padding: 100px 0 60px; }
-    .detail-title { font-size: 28px; }
-    .detail-subtitle { font-size: 14px; }
-    .detail-icon { font-size: 36px; }
-    .industry-grid { grid-template-columns: 1fr; }
-    .container { padding: 0 20px; }
-    .master-hero { padding: 100px 0 60px; }
-    .master-title { font-size: 28px; }
-    .master-subtitle { font-size: 14px; }
-    .grid-section { padding: 60px 0; }
-    .cases-section { padding: 40px 0 80px; }
-    .cases-title { font-size: 22px; }
-    .back-btn { font-size: 13px; padding: 6px 14px; }
-    .home-section { padding: 60px 0; }
-    .section-title { font-size: 26px; }
-    .section-sub { font-size: 14px; margin-bottom: 32px; }
-    .page-footer { padding: 48px 0 36px; }
-    .footer-cta { font-size: 14px; padding: 12px 24px; }
-  }
-  @media (max-width: 480px) {
-    .case-impacts { grid-template-columns: 1fr; }
-    .detail-stats { flex-direction: column; }
-    .detail-stat { width: 100%; }
-    .detail-hero { padding: 80px 0 48px; }
-    .navbar { height: 56px; }
-    .nav-logo { font-size: 16px; gap: 8px; }
-    .nav-logo-mark { width: 26px; height: 26px; font-size: 15px; }
+    /* Navbar */
+    .navbar { padding: 0 12px; height: 56px; }
+    .nav-logo { font-size: 15px; gap: 8px; }
+    .nav-logo-mark { width: 26px; height: 26px; font-size: 14px; border-radius: 6px; }
     .nav-link { font-size: 11px; letter-spacing: 0.5px; }
-    .nav-cta { font-size: 11px; padding: 6px 14px; }
-    .nav-links { gap: 10px; }
+    .nav-cta { font-size: 11px; padding: 7px 14px; white-space: nowrap; }
+    .nav-links { gap: 12px; }
+
+    /* Homepage hero */
     .home-hero { padding-top: 56px; min-height: auto; padding-bottom: 60px; }
-    .home-hero h1 { font-size: 26px; }
-    .home-hero-sub { font-size: 14px; }
-    .home-hero-tag { font-size: 10px; padding: 5px 12px; }
-    .btn-primary, .btn-secondary { padding: 12px 20px; font-size: 13px; }
-    .section-title { font-size: 22px; }
-    .section-tag { font-size: 11px; }
-    .home-section { padding: 48px 0; }
-    .process-grid { grid-template-columns: 1fr; gap: 16px; }
-    .process-num { font-size: 36px; }
-    .process-step { padding: 24px 16px; }
-    .services-grid { grid-template-columns: 1fr; }
+    .home-hero h1 { font-size: 28px; }
+    .home-hero-sub { font-size: 14px; margin-bottom: 28px; }
+    .home-hero-tag { font-size: 10px; padding: 5px 12px; margin-bottom: 20px; }
+
+    /* Homepage sections */
+    .home-section { padding: 56px 0; }
+    .section-title { font-size: 24px; }
+    .section-tag { font-size: 11px; letter-spacing: 1.5px; }
+    .section-sub { font-size: 14px; margin-bottom: 28px; }
     .service-card { padding: 28px 24px; }
+    .service-icon { width: 42px; height: 42px; font-size: 20px; border-radius: 10px; margin-bottom: 16px; }
+    .service-title { font-size: 18px; }
+    .service-desc { font-size: 13px; }
+    .process-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .process-step { padding: 24px 16px; }
+    .process-num { font-size: 36px; }
+    .process-title { font-size: 16px; }
+    .process-desc { font-size: 12px; }
+
+    /* Master page */
+    .master-hero { padding: 88px 0 48px; }
+    .master-title { font-size: 26px; }
+    .master-subtitle { font-size: 14px; }
+    .grid-section { padding: 48px 0 60px; }
+    .industry-grid { grid-template-columns: 1fr; }
     .card-title { font-size: 18px; }
-    .card-icon { width: 40px; height: 40px; font-size: 20px; }
-    .master-hero { padding: 80px 0 48px; }
-    .master-title { font-size: 24px; }
-    .stat-value { font-size: 22px; }
-    .stat-label { font-size: 10px; }
-    .container { padding: 0 16px; }
-    .modal-overlay { align-items: flex-end; }
-    .modal-card { padding: 32px 24px; margin: 0; border-radius: var(--radius) var(--radius) 0 0; max-height: 90vh; overflow-y: auto; }
-    .modal-title { font-size: 20px; }
-    .form-input, .form-select { font-size: 16px; }
-    .footer-brand { flex-direction: column; gap: 8px; }
-    .footer-text { font-size: 13px; }
+
+    /* Detail pages */
+    .detail-hero { padding: 88px 0 48px; }
+    .detail-title { font-size: 26px; }
+    .detail-subtitle { font-size: 14px; }
+    .detail-icon { font-size: 32px; margin-bottom: 12px; }
+    .detail-stats { gap: 10px; flex-wrap: wrap; }
+    .detail-stat { flex: 1; min-width: 48%; padding: 12px 14px; }
+    .detail-stat-val { font-size: 18px; }
+    .detail-stat-lbl { font-size: 9px; letter-spacing: 1px; }
     .back-btn { font-size: 12px; padding: 6px 12px; margin-bottom: 20px; }
+
+    /* Use case cards */
+    .cases-section { padding: 40px 0 60px; }
+    .cases-title { font-size: 22px; margin-bottom: 28px; }
+    .case-header { padding: 16px; gap: 12px; }
+    .case-num { font-size: 20px; min-width: 32px; }
+    .case-header-title { font-size: 16px; }
     .case-header-sub { font-size: 12px; }
     .case-expand-btn { width: 32px; height: 32px; font-size: 16px; }
+    .case-body-inner { padding: 0 16px 24px; grid-template-columns: 1fr; gap: 16px; }
+    .case-section { padding: 16px; }
+    .case-section-text { font-size: 13px; line-height: 1.6; }
+    .case-impacts { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .impact-card { padding: 16px 12px; }
     .impact-value { font-size: 18px; }
     .impact-label { font-size: 10px; }
+
+    /* Shared */
+    .container { padding: 0 16px; }
+    .stats-row { gap: 16px; flex-wrap: wrap; }
+    .stat-item { min-width: 80px; }
+    .stat-value { font-size: 22px; }
+    .stat-label { font-size: 9px; }
+    .page-footer { padding: 48px 0 32px; }
+    .footer-cta { font-size: 14px; padding: 12px 24px; }
+    .footer-text { font-size: 13px; }
+    .footer-brand { flex-direction: column; gap: 8px; }
     .hero-badge { font-size: 11px; }
+
+    /* Modal */
+    .modal-overlay { align-items: flex-end; }
+    .modal-card { padding: 32px 20px; margin: 0; border-radius: var(--radius) var(--radius) 0 0; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 20px; }
+    .modal-sub { font-size: 13px; margin-bottom: 24px; }
+    .form-input, .form-select { font-size: 16px; padding: 14px 16px; }
+    .form-label { font-size: 11px; }
+    .form-submit { font-size: 14px; padding: 14px; }
+  }
+
+  @media (max-width: 420px) {
+    /* Extra small phones */
+    .navbar { height: 52px; }
+    .nav-logo { font-size: 14px; gap: 6px; }
+    .nav-logo-mark { width: 24px; height: 24px; font-size: 13px; }
+    .nav-link { font-size: 10px; letter-spacing: 0; }
+    .nav-cta { font-size: 10px; padding: 6px 10px; }
+    .nav-links { gap: 8px; }
+    .home-hero { padding-top: 52px; }
+    .home-hero h1 { font-size: 24px; }
+    .home-hero-sub { font-size: 13px; }
+    .btn-primary, .btn-secondary { padding: 12px 16px; font-size: 13px; }
+    .section-title { font-size: 22px; }
+    .home-section { padding: 44px 0; }
+    .process-grid { grid-template-columns: 1fr; }
+    .master-hero { padding: 76px 0 40px; }
+    .master-title { font-size: 22px; }
+    .detail-hero { padding: 76px 0 40px; }
+    .detail-title { font-size: 22px; }
+    .case-impacts { grid-template-columns: 1fr; }
+    .impact-card { padding: 14px; }
+    .card-icon { width: 36px; height: 36px; font-size: 18px; }
+    .container { padding: 0 14px; }
   }
 
   .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
@@ -1546,14 +1587,14 @@ function MasterPage({ onSelectIndustry, onOpenBriefing }) {
       <div className="grid-section">
         <div className="container">
           <h2 className="grid-section-title">Explore by Domain</h2>
-          <p className="grid-section-sub">Double-click any card to explore AI use cases tailored for that domain — each with a clear problem, solution approach, and expected impact.</p>
+          <p className="grid-section-sub">Click any card to explore AI use cases tailored for that domain — each with a clear problem, solution approach, and expected impact.</p>
           <div className="industry-grid">
             {INDUSTRIES.map((ind, i) => (
               <div
                 key={ind.id}
                 className="industry-card animate-in"
                 style={{ "--card-accent": ind.color, animationDelay: `${0.1 + i * 0.08}s` }}
-                onDoubleClick={() => onSelectIndustry(ind.id)}
+                onClick={() => onSelectIndustry(ind.id)}
               >
                 <span className="card-icon">{ind.icon}</span>
                 <div className="card-title">{ind.name}</div>
@@ -2116,7 +2157,7 @@ function HomePage({ onNavigate, onOpenBriefing }) {
                 key={ind.id}
                 className="industry-card animate-in"
                 style={{ "--card-accent": ind.color, animationDelay: `${0.1 + i * 0.08}s` }}
-                onDoubleClick={() => onNavigate(PAGES.DETAIL, ind.id)}
+                onClick={() => onNavigate(PAGES.DETAIL, ind.id)}
               >
                 <span className="card-icon">{ind.icon}</span>
                 <div className="card-title">{ind.name}</div>
@@ -2166,9 +2207,31 @@ function HomePage({ onNavigate, onOpenBriefing }) {
 // ─── Briefing Modal ───
 function BriefingModal({ onClose }) {
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", interest: "" });
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email) return;
+    setSubmitting(true);
+    try {
+      const body = new URLSearchParams({
+        "form-name": "briefing",
+        ...formData
+      });
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body.toString()
+      });
+    } catch (err) {
+      // Still show success — Netlify may not be available in dev
+    }
+    setSubmitting(false);
     setSubmitted(true);
   };
 
@@ -2180,22 +2243,24 @@ function BriefingModal({ onClose }) {
           <>
             <div className="modal-title">Schedule a Briefing</div>
             <div className="modal-sub">A 30-minute conversation to evaluate where AI can drive measurable impact in your organization. No obligations.</div>
-            <div onSubmit={handleSubmit}>
+            <form name="briefing" onSubmit={handleSubmit} data-netlify="true" netlify-honeypot="bot-field">
+              <input type="hidden" name="form-name" value="briefing" />
+              <p style={{ display: "none" }}><input name="bot-field" /></p>
               <div className="form-group">
                 <label className="form-label">Full Name</label>
-                <input className="form-input" placeholder="John Smith" />
+                <input className="form-input" name="name" value={formData.name} onChange={handleChange} placeholder="John Smith" required />
               </div>
               <div className="form-group">
                 <label className="form-label">Work Email</label>
-                <input className="form-input" type="email" placeholder="john@company.com" />
+                <input className="form-input" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="john@company.com" required />
               </div>
               <div className="form-group">
                 <label className="form-label">Company</label>
-                <input className="form-input" placeholder="Acme Corp" />
+                <input className="form-input" name="company" value={formData.company} onChange={handleChange} placeholder="Acme Corp" />
               </div>
               <div className="form-group">
                 <label className="form-label">Area of Interest</label>
-                <select className="form-select">
+                <select className="form-select" name="interest" value={formData.interest} onChange={handleChange}>
                   <option value="">Select a domain...</option>
                   <option>Healthcare</option>
                   <option>Audit & CPA Firms</option>
@@ -2205,8 +2270,10 @@ function BriefingModal({ onClose }) {
                   <option>Other / Not Sure Yet</option>
                 </select>
               </div>
-              <button className="form-submit" type="button" onClick={handleSubmit}>Submit Request →</button>
-            </div>
+              <button className="form-submit" type="submit" disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit Request →"}
+              </button>
+            </form>
           </>
         ) : (
           <div className="form-success">
