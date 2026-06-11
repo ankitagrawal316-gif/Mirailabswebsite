@@ -116,8 +116,6 @@ nav {
     linear-gradient(to bottom, transparent 60%, rgba(255,255,255,0.6) 100%);
 }
 
-
-
 /* Hero content — vertically centred in the dark sky area */
 .hero-content {
   position: relative; z-index: 3;
@@ -207,10 +205,6 @@ h1 .lime { color: var(--lime); font-style: italic; }
 
 /* ── Stats bar — full-width, pinned to hero bottom ── */
 
-
-
-
-
 .hs { display: flex; flex-direction: column; gap: 4px; }
 .hs-n {
   font-family: 'Inter', sans-serif; font-weight: 700;
@@ -258,53 +252,11 @@ h1 .lime { color: var(--lime); font-style: italic; }
   height: 100%; display: flex; align-items: center;
 }
 
-/* Scrolling track */
-.trust-track-wrap {
-  flex: 1; overflow: hidden; position: relative;
-}
-/* Fade edges */
-.trust-track-wrap::before,
-.trust-track-wrap::after {
-  content: '';
-  position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2;
-  pointer-events: none;
-}
-.trust-track-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, #FFF8EE, transparent);
-}
-.trust-track-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, #FFF8EE, transparent);
-}
-.trust-track {
-  display: flex; align-items: center; gap: 0;
-  animation: trustScroll 18s linear infinite;
-  white-space: nowrap;
-  width: max-content;
-}
-.trust-track:hover { animation-play-state: paused; }
-@keyframes trustScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.trust-logo {
-  font-family: 'DM Serif Display', serif; font-size: 15px;
-  font-weight: 400; letter-spacing: 0.02em;
-  color: var(--white); padding: 0 40px;
-  display: inline-flex; align-items: center; gap: 8px;
-  transition: color 0.2s;
-  position: relative;
-}
+
+
 .trust-logo:hover { color: #D42B10; }
 /* Dot separator between logos */
-.trust-logo::after {
-  content: '✦';
-  position: absolute; right: 0;
-  font-size: 7px; color: rgba(212,43,16,0.4);
-  transform: translateX(50%);
-}
-.trust-logo:last-child::after { display: none; }
+
 .trust-logo {
   font-family: 'Inter', sans-serif; font-weight: 600;
   font-size: 13px; color: var(--muted2); letter-spacing: 0.04em;
@@ -358,7 +310,7 @@ h2 .jp {
 }
 .svc:hover { background: var(--card2); }
 .svc::after {
-  content: attr(data-k); position: absolute; bottom: -14px; right: 4px;
+  content: none; position: absolute; bottom: -14px; right: 4px;
   font-family: 'Noto Serif JP', serif; font-weight: 200; font-size: 88px;
   color: rgba(212,43,16,0.10); pointer-events: none; line-height: 1;
   filter: blur(3px);
@@ -542,11 +494,7 @@ footer {
   display: block; transition: background 0.2s, transform 0.2s;
 }
 .dom:hover { background: #fff; transform: translateY(-2px); }
-.dom::after {
-  content: attr(data-k); position: absolute; bottom: -18px; right: 8px;
-  font-family: 'Noto Serif JP', serif; font-weight: 200; font-size: 92px;
-  color: rgba(212,43,16,0.08); pointer-events: none; line-height: 1;
-}
+.dom::after { display: none; }
 .dom-fn {
   font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12px;
   letter-spacing: 0.04em; color: var(--lime); margin-bottom: 14px;
@@ -614,12 +562,6 @@ footer {
 .why-pillar p { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; }
 
 /* ────────────────────────────────── RESPONSIVE */
-@media (max-width: 860px) {
-  .challenge-grid { grid-template-columns: 1fr; gap: 40px; }
-  .shift-grid, .dom-grid, .how-grid, .why-grid { grid-template-columns: 1fr; }
-  .how-step { border-right: none; border-bottom: 1px solid var(--border); }
-}
-
 
 /* ── Nav dropdown ── */
 .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
@@ -650,6 +592,256 @@ footer {
 }
 .nav-dropdown-menu a:last-child { border-bottom: none; }
 .nav-dropdown-menu a:hover { background: var(--surface); color: var(--lime); }
+
+.trust-static { flex: 1; display: flex; align-items: center; justify-content: space-around; }
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE STYLES  ≤768px  — desktop untouched
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Nav ─────────────────────────────────────────── */
+  nav {
+    padding: 0 20px;
+    height: 56px;
+  }
+  .nav-links { display: none; }
+  .nav-cta   { display: none; }
+
+  /* Hamburger button */
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+    background: none;
+    border: none;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: #111111;
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  nav.mobile-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  nav.mobile-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+  nav.mobile-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Open nav overlay */
+  nav.mobile-open .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 56px; left: 0; right: 0; bottom: 0;
+    background: #FFFFFF;
+    z-index: 999;
+    padding: 32px 24px;
+    gap: 8px;
+    border-top: 1px solid #E4E4E4;
+    overflow-y: auto;
+  }
+  nav.mobile-open .nav-links a,
+  nav.mobile-open .nav-links .nav-dropdown-btn {
+    font-size: 18px;
+    padding: 12px 0;
+    color: #111111;
+    border-bottom: 1px solid #E4E4E4;
+    width: 100%;
+    text-align: left;
+  }
+  nav.mobile-open .nav-links a:last-child { border-bottom: none; }
+
+  /* Use Cases dropdown in mobile menu */
+  nav.mobile-open .nav-dropdown { width: 100%; }
+  nav.mobile-open .nav-dropdown-btn { width: 100%; }
+  nav.mobile-open .nav-dropdown-menu {
+    position: static;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background: #F8F8F8;
+    margin-top: 4px;
+    min-width: unset;
+  }
+  nav.mobile-open .nav-dropdown-menu a {
+    font-size: 15px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #E4E4E4;
+    color: #555;
+  }
+
+  /* Mobile CTA inside menu */
+  nav.mobile-open .nav-links::after {
+    content: '';
+  }
+
+  /* ── Hero ────────────────────────────────────────── */
+  .hero {
+    min-height: 60vh;
+    padding-top: 56px;
+  }
+  .hero-text {
+    padding: 40px 20px 32px;
+    max-width: 100%;
+  }
+  h1 {
+    font-size: clamp(32px, 9vw, 52px);
+    line-height: 1.1;
+  }
+  .hero-body {
+    font-size: 15px;
+  }
+  .hero-cta { margin-top: 24px; }
+
+  /* ── Trust bar ───────────────────────────────────── */
+  .trust-bar { padding: 0; }
+  .trust-inner {
+    flex-direction: column;
+    height: auto;
+    padding: 16px 20px;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+  }
+  .trust-label {
+    border-right: none;
+    border-bottom: 1px solid rgba(212,43,16,0.2);
+    padding: 0 0 12px;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .trust-static {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 0;
+  }
+  .trust-logo {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  /* ── All grid sections → single column ──────────── */
+  .challenge-grid,
+  .shift-grid,
+  .dom-grid,
+  .how-grid,
+  .why-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  /* Hide ninja divider in shift */
+  .shift-ninja { display: none !important; }
+
+  /* ── Section padding ─────────────────────────────── */
+  section,
+  .challenge-section,
+  .shift-section,
+  .dom-section,
+  .how-section,
+  .why-section,
+  .cta-section {
+    padding: 48px 20px;
+  }
+
+  /* ── How step borders ────────────────────────────── */
+  .how-step {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  /* ── CTA section ─────────────────────────────────── */
+  .cta-section { padding: 48px 20px 56px; }
+
+  /* ── Footer ──────────────────────────────────────── */
+  footer, .site-footer {
+    padding: 32px 20px;
+    text-align: center;
+  }
+}
+
+/* ── Vertical pages: hero stacks on mobile ─────────────── */
+@media (max-width: 768px) {
+  .vp-hero {
+    grid-template-columns: 1fr !important;
+    padding: 72px 20px 0 !important;
+    gap: 24px 0 !important;
+    min-height: auto !important;
+  }
+  .vp-hero-img { order: -1; }
+  .vp-hero-img img { max-width: 85%; margin: 0 auto; display: block; }
+
+  /* Stakeholder kicker */
+  .vp-hero-kicker {
+    flex-direction: column !important;
+  }
+  .vp-kicker-label {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(212,43,16,0.2);
+    width: 100%;
+    padding: 12px 20px;
+    text-align: center;
+  }
+  .vp-kicker-stakes { flex-wrap: wrap; width: 100%; }
+  .vp-stake {
+    flex: 1 1 50%;
+    min-width: 0;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(212,43,16,0.1);
+    padding: 12px 16px;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  /* Shift col */
+  .vp-shift { grid-template-columns: 1fr !important; }
+  .vp-shift-divider { display: none !important; }
+
+  /* Use cases */
+  .uc2-shell { grid-template-columns: 1fr !important; }
+  .uc2-list { border-right: none; border-bottom: 1px solid var(--border); }
+  .uc2-before-after { grid-template-columns: 1fr !important; }
+  .uc2-col-sep { display: none !important; }
+  .uc2-impact { grid-template-columns: repeat(2,1fr) !important; }
+
+  /* Deliver grid */
+  .deliver-grid { grid-template-columns: 1fr !important; }
+  .deliver-step {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  /* Stack pills */
+  .stack-pills { gap: 8px; }
+  .stack-pill { font-size: 11px; padding: 6px 14px; }
+
+  /* vp section padding */
+  .vp-shift-section,
+  .uc2-section,
+  .stack-section,
+  .deliver-section,
+  .vp-cta {
+    padding: 48px 20px !important;
+  }
+}
+
+/* ── Small mobile ≤480px ───────────────────────────────── */
+@media (max-width: 480px) {
+  h1 { font-size: clamp(28px, 9vw, 44px); }
+  .vp-h1 { font-size: clamp(26px, 8.5vw, 40px) !important; }
+  .vp-stake { flex: 1 1 100%; }
+  .uc2-impact { grid-template-columns: 1fr 1fr !important; }
+  .uc2-val { font-size: 22px; }
+  section, .vp-shift-section, .uc2-section, .deliver-section { padding: 40px 16px !important; }
+  .vp-hero { padding: 64px 16px 0 !important; }
+}
 
 </style>
 </head>
@@ -712,27 +904,18 @@ footer {
     </div>
   </div>
 
-
-
 </div>
 
 <!-- TRUST BAR — carousel (PRESERVED) -->
 <div class="trust-bar">
   <div class="trust-inner">
     <span class="trust-label">BUILT BY<br>PRACTITIONERS FROM</span>
-    <div class="trust-track-wrap">
-      <div class="trust-track">
-        <span class="trust-logo">Clear</span>
-        <span class="trust-logo">Sysmex</span>
-        <span class="trust-logo">Nference</span>
-        <span class="trust-logo">IIT Bombay</span>
-        <span class="trust-logo">Bytebeam</span>
-        <span class="trust-logo">Clear</span>
-        <span class="trust-logo">Sysmex</span>
-        <span class="trust-logo">Nference</span>
-        <span class="trust-logo">IIT Bombay</span>
-        <span class="trust-logo">Bytebeam</span>
-      </div>
+    <div class="trust-static">
+      <span class="trust-logo">Clear</span>
+      <span class="trust-logo">Sysmex</span>
+      <span class="trust-logo">Nference</span>
+      <span class="trust-logo">IIT Bombay</span>
+      <span class="trust-logo">Bytebeam</span>
     </div>
   </div>
 </div>
@@ -745,7 +928,7 @@ footer {
       <h2>Everyone is adopting AI.<br><span class="lime">Few reach production.</span></h2>
     </div>
     <div class="challenge-right">
-      <p>The ambition is settled. The execution is where it breaks — pilots that never scale, tools that never integrate, models that never touch a real workflow.</p>
+      <p>The ambition is settled. The execution is where it breaks – pilots that never scale, tools that never integrate, models that never touch a real workflow.</p>
       <p>The gap isn't strategy. It's the ability to build AI that works inside the systems you already run, delivered by people who have done it before.</p>
       <p class="lime">That's the gap we close.</p>
     </div>
@@ -775,7 +958,7 @@ footer {
       <div class="shift-row">Weeks to value</div>
     </div>
   </div>
-  <p class="shift-close">Mirai is how enterprises cross from the first column to the second.</p>
+  
 </section>
 
 <!-- ═══ WHAT WE DO — six domains ═══ -->
@@ -784,37 +967,37 @@ footer {
   <h2>One partner.<br>Every function that <span class="lime">runs the enterprise.</span></h2>
   <div class="dom-grid">
 
-    <a class="dom" href="#" data-k="売">
+    <a class="dom" href="#">
       <div class="dom-fn">Go-to-Market</div>
       <div class="dom-out">Pipeline that builds itself.</div>
       <div class="dom-buyer">For revenue leaders</div>
     </a>
 
-    <a class="dom" href="#" data-k="財">
+    <a class="dom" href="#">
       <div class="dom-fn">Finance / CFO Office</div>
       <div class="dom-out">Close faster, automate AP &amp; AR.</div>
       <div class="dom-buyer">For finance leaders</div>
     </a>
 
-    <a class="dom" href="#" data-k="医">
+    <a class="dom" href="#">
       <div class="dom-fn">Hospital Administration</div>
       <div class="dom-out">Less paperwork, faster care.</div>
       <div class="dom-buyer">For health system operators</div>
     </a>
 
-    <a class="dom" href="#" data-k="助">
+    <a class="dom" href="#">
       <div class="dom-fn">Customer Support</div>
       <div class="dom-out">Resolve more, escalate less.</div>
       <div class="dom-buyer">For CX leaders</div>
     </a>
 
-    <a class="dom" href="#" data-k="人">
+    <a class="dom" href="#">
       <div class="dom-fn">HR</div>
       <div class="dom-out">Source, screen, onboard, support — autonomously.</div>
       <div class="dom-buyer">For talent &amp; people leaders</div>
     </a>
 
-    <a class="dom" href="#" data-k="簿">
+    <a class="dom" href="#">
       <div class="dom-fn">Accounting &amp; CPA Firms</div>
       <div class="dom-out">More clients per professional, no quality loss.</div>
       <div class="dom-buyer">For firm partners</div>
@@ -898,7 +1081,7 @@ footer {
       <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em">MIRAI LABS</span>
     </div>
     <div class="footer-copy">© 2026 Mirai Labs. Enterprise AI Partner. Bengaluru, India.</div>
-    <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">LinkedIn</a><a href="#">hello@themirailabs.com</a></div>
+    <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">LinkedIn</a><a href="#">ankit@themirailabs.com</a></div>
   </div>
   
 </footer>
@@ -918,6 +1101,33 @@ footer {
   });
   dd.querySelector('.nav-dropdown-menu').addEventListener('click', function(e) {
     e.stopPropagation();
+  });
+})();
+</script>
+
+<script>
+/* Mobile hamburger — injected once per page */
+(function() {
+  var nav = document.querySelector('nav');
+  if (!nav || nav.querySelector('.nav-hamburger')) return;
+  var hb = document.createElement('button');
+  hb.className = 'nav-hamburger';
+  hb.setAttribute('aria-label', 'Toggle menu');
+  hb.innerHTML = '<span></span><span></span><span></span>';
+  nav.appendChild(hb);
+  hb.addEventListener('click', function(e) {
+    e.stopPropagation();
+    nav.classList.toggle('mobile-open');
+  });
+  document.addEventListener('click', function(e) {
+    if (!nav.contains(e.target)) nav.classList.remove('mobile-open');
+  });
+  /* Keep dropdown links clickable in mobile */
+  var ddMenu = nav.querySelector('.nav-dropdown-menu');
+  if (ddMenu) ddMenu.addEventListener('click', function(e) { e.stopPropagation(); });
+  /* Close menu when a link is tapped */
+  nav.querySelectorAll('.nav-links a').forEach(function(a) {
+    a.addEventListener('click', function() { nav.classList.remove('mobile-open'); });
   });
 })();
 </script>
