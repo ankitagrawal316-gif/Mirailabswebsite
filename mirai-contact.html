@@ -1326,7 +1326,7 @@ footer {
       <h3>Request received.</h3>
       <p>A member of our team will reach out within 24 hours to schedule your briefing.<br><br>In the meantime, explore our use cases or read about the team.</p>
       <div style="display:flex;gap:14px;justify-content:center;margin-top:24px;">
-        <a class="btn-lime" href="mirailabs-japanese.html">Back to home &rarr;</a>
+        <a class="btn-lime" href="index.html">Back to home &rarr;</a>
       </div>
     </div>
   </div>
@@ -1394,8 +1394,21 @@ footer {
 <script>
 function handleSubmit(e) {
   e.preventDefault();
-  document.getElementById('cf-form-wrap').style.display = 'none';
-  document.getElementById('cf-confirm').style.display = 'block';
+  var form = document.getElementById('contactForm');
+  var data = new FormData(form);
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(data).toString()
+  })
+  .then(function() {
+    document.getElementById('cf-form-wrap').style.display = 'none';
+    document.getElementById('cf-confirm').style.display = 'block';
+  })
+  .catch(function(err) {
+    alert('Something went wrong. Please try again or email us at ankit@themirailabs.com');
+    console.error(err);
+  });
 }
 </script>
 
