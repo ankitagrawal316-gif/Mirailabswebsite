@@ -1292,37 +1292,30 @@ footer {
       <div class="cf-title">Let's talk.</div>
       <div class="cf-sub">Fill in the details below and we'll reach out within 24 hours.</div>
 
-      <form id="contactForm" onsubmit="handleSubmit(event)">
+      <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
+        <!-- Netlify required hidden fields -->
+        <input type="hidden" name="form-name" value="contact" />
+        <p style="display:none;">
+          <label>Don't fill this out: <input name="bot-field" /></label>
+        </p>
         <div class="cf-row">
           <div class="cf-group">
             <label class="cf-label" for="cf-name">FULL NAME *</label>
-            <input class="cf-input" id="cf-name" type="text" placeholder="Your full name" required>
+            <input class="cf-input" id="cf-name" name="full-name" type="text" placeholder="Your full name" required>
           </div>
           <div class="cf-group">
             <label class="cf-label" for="cf-email">WORK EMAIL *</label>
-            <input class="cf-input" id="cf-email" type="email" placeholder="you@company.com" required>
+            <input class="cf-input" id="cf-email" name="email" type="email" placeholder="you@company.com" required>
           </div>
         </div>
         <div class="cf-group">
           <label class="cf-label" for="cf-company">COMPANY *</label>
-          <input class="cf-input" id="cf-company" type="text" placeholder="Company name" required>
+          <input class="cf-input" id="cf-company" name="company" type="text" placeholder="Company name" required>
         </div>
-        <div class="cf-group">
-          <label class="cf-label" for="cf-area">AREA OF INTEREST *</label>
-          <select class="cf-select" id="cf-area" required>
-            <option value="" disabled selected>Select a function</option>
-            <option>Go-to-Market</option>
-            <option>Finance / CFO Office</option>
-            <option>Hospital Administration</option>
-            <option>Customer Support</option>
-            <option>HR</option>
-            <option>Accounting &amp; CPA Firms</option>
-            <option>Other / Not sure yet</option>
-          </select>
-        </div>
+
         <div class="cf-group">
           <label class="cf-label" for="cf-automate">WHAT WOULD YOU MOST WANT TO AUTOMATE? (optional)</label>
-          <textarea class="cf-textarea" id="cf-automate" placeholder="Describe the workflow or process you'd like to improve..."></textarea>
+          <textarea class="cf-textarea" id="cf-automate" name="automate" placeholder="Describe the workflow or process you'd like to improve..."></textarea>
         </div>
         <button class="cf-submit" type="submit">Schedule a briefing &rarr;</button>
       </form>
