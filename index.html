@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Mirai Labs is an applied AI company. Forward-deployed engineers and domain experts put AI into your live operation, measured against one business metric.">
 <title>Mirai Labs — The Applied AI Company</title>
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" as="image" href="hero-mountain.webp" media="(min-width: 769px)" fetchpriority="high">
+<link rel="preload" as="image" href="hero-mountain-960.webp" media="(max-width: 768px)" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -2581,6 +2586,9 @@
   .mega::before { top: -20px !important; height: 20px !important; }
   .mega-item { font-size: 13px; font-weight: 500; color: var(--ink); white-space: nowrap; cursor: default; }
   @media (min-width: 521px) { footer .footer-top { grid-template-columns: repeat(2, max-content) !important; } }
+  /* v158: speed — small hero on phones, below-the-fold backgrounds after load */
+  @media (max-width: 768px) { #hero .hero-frame::before { background-image: url('hero-mountain-960.webp') !important; } }
+  html:not(.img-ok) #layers::before, html:not(.img-ok) footer.ft-sum { background-image: none !important; }
 </style>
 </head>
 <body>
@@ -2705,7 +2713,7 @@
   <div class="ap-inner">
     <div class="ap-top">
       <div class="ap-img reveal reveal-delay-1">
-        <img src="applied-mountain.webp" alt="Guides and a team roped together, setting out from a mountain camp at sunrise" width="1672" height="941">
+        <img src="applied-mountain.webp" loading="lazy" decoding="async" alt="Guides and a team roped together, setting out from a mountain camp at sunrise" width="1672" height="941">
       <div class="ap-head">
         <div class="label-chip">What is an applied AI company?</div>
         <h2 class="ap-h2"><span class="nw">We don't hand over a deck.</span><br><em class="nw">We hand over results.</em></h2>
@@ -2947,6 +2955,10 @@
 </div>
 
 <!-- ░░ SCRIPTS ░░ -->
+<script>
+  (function(){ function ok(){ document.documentElement.classList.add('img-ok'); }
+    if (document.readyState === 'complete') ok(); else window.addEventListener('load', ok); })();
+</script>
 <script>
   (function(){
     var ov=document.getElementById('talk'); if(!ov) return;
